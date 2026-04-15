@@ -72,87 +72,87 @@
       }
     };
 
-function App() {
-  const [userRole, setUserRole] = useState(null);
-  const [cashierId, setCashierId] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [balances, setBalances] = useState({ kembalian: 0, pulsa: 0, bank: 0 });
-  const [storeConfig, setStoreConfig] = useState({ name: 'Toko Mas Heru', address: '', phone: '', footer: ''});
-
-  const syncToGoogleSheets = async (action, data) => {
-    try {
-      await fetch(APP_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action, data, timestamp: new Date().toISOString() })
-      });
-    } catch (error) { console.error("Sync Error:", error); }
-  };
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const res = await fetch(APP_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'GET_INITIAL_DATA' })
-        });
-        const result = await res.json();
-        if (result.status === 'success') {
-          setProducts(result.data.products || []);
-          setCategories(result.data.categories || []);
-          setTransactions(result.data.transactions || []);
-          if (result.data.balances) setBalances(result.data.balances);
-          if (result.data.storeConfig) setStoreConfig(result.data.storeConfig);
-        }
-      } catch (e) { console.error("Load Error", e); }
-      finally { setLoading(false); }
-    };
-    loadData();
-  }, []);
-
-  if (loading) return <div className="h-screen flex items-center justify-center bg-slate-900 text-white">MEMUAT DATA...</div>;
-  if (!userRole) return <LoginScreen onLogin={(role, code) => { setUserRole(role); setCashierId(code); }} />;
-
-  return (
-    <div className="min-h-screen bg-slate-50">
-      {userRole === 'kasir' ? (
-        <KasirDashboard 
-          products={products} categories={categories} storeConfig={storeConfig}
-          cashierId={cashierId} transactions={transactions}
-          onLogout={() => { setUserRole(null); setCashierId(''); }}
-          onTransactionSuccess={(trx) => {
-            setTransactions(prev => [trx, ...prev]);
-            syncToGoogleSheets('ADD_TRANSACTION', trx);
-            setBalances(prev => {
-              const nb = { ...prev }; // Kita pakai 'nb' supaya pendek dan tidak typo
-              if (trx.method === 'Cash') nb.kembalian += trx.total;
-              else if (trx.method === 'EDC BRILink') nb.bank += trx.total;
-              trx.items.forEach(i => {
-                const sub = i.price * i.qty;
-                if (i.category === 'Tarik Tunai') nb.kembalian -= sub;
-                else if (['Pulsa', 'Paket Data'].includes(i.category)) nb.pulsa -= sub;
-                else if (i.category === 'Transfer') nb.bank -= sub;
-              });
-              syncToGoogleSheets('UPDATE_BALANCES', nb);
-              return nb;
+    function App() {
+      const [userRole, setUserRole] = useState(null);
+      const [cashierId, setCashierId] = useState('');
+      const [loading, setLoading] = useState(true);
+      const [products, setProducts] = useState([]);
+      const [categories, setCategories] = useState([]);
+      const [transactions, setTransactions] = useState([]);
+      const [balances, setBalances] = useState({ kembalian: 0, pulsa: 0, bank: 0 });
+      const [storeConfig, setStoreConfig] = useState({ name: 'Toko Mas Heru', address: '', phone: '', footer: ''});
+    
+      const syncToGoogleSheets = async (action, data) => {
+        try {
+          await fetch(APP_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action, data, timestamp: new Date().toISOString() })
+          });
+        } catch (error) { console.error("Sync Error:", error); }
+      };
+    
+      useEffect(() => {
+        const loadData = async () => {
+          try {
+            const res = await fetch(APP_SCRIPT_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({ action: 'GET_INITIAL_DATA' })
             });
-          }}
-        />
-      ) : (
-        <AdminDashboard 
-          products={products} setProducts={setProducts} categories={categories} setCategories={setCategories}
-          transactions={transactions} balances={balances} setBalances={setBalances}
-          storeConfig={storeConfig} setStoreConfig={setStoreConfig}
-          onLogout={() => setUserRole(null)} syncToSheets={syncToGoogleSheets}
-        />
-      )}
-    </div>
-  );
-}
+            const result = await res.json();
+            if (result.status === 'success') {
+              setProducts(result.data.products || []);
+              setCategories(result.data.categories || []);
+              setTransactions(result.data.transactions || []);
+              if (result.data.balances) setBalances(result.data.balances);
+              if (result.data.storeConfig) setStoreConfig(result.data.storeConfig);
+            }
+          } catch (e) { console.error("Load Error", e); }
+          finally { setLoading(false); }
+        };
+        loadData();
+      }, []);
+    
+      if (loading) return <div className="h-screen flex items-center justify-center bg-slate-900 text-white">MEMUAT DATA...</div>;
+      if (!userRole) return <LoginScreen onLogin={(role, code) => { setUserRole(role); setCashierId(code); }} />;
+    
+      return (
+        <div className="min-h-screen bg-slate-50">
+          {userRole === 'kasir' ? (
+            <KasirDashboard 
+              products={products} categories={categories} storeConfig={storeConfig}
+              cashierId={cashierId} transactions={transactions}
+              onLogout={() => { setUserRole(null); setCashierId(''); }}
+              onTransactionSuccess={(trx) => {
+                setTransactions(prev => [trx, ...prev]);
+                syncToGoogleSheets('ADD_TRANSACTION', trx);
+                setBalances(prev => {
+                  const nb = { ...prev }; // Kita pakai 'nb' supaya pendek dan tidak typo
+                  if (trx.method === 'Cash') nb.kembalian += trx.total;
+                  else if (trx.method === 'EDC BRILink') nb.bank += trx.total;
+                  trx.items.forEach(i => {
+                    const sub = i.price * i.qty;
+                    if (i.category === 'Tarik Tunai') nb.kembalian -= sub;
+                    else if (['Pulsa', 'Paket Data'].includes(i.category)) nb.pulsa -= sub;
+                    else if (i.category === 'Transfer') nb.bank -= sub;
+                  });
+                  syncToGoogleSheets('UPDATE_BALANCES', nb);
+                  return nb;
+                });
+              }}
+            />
+          ) : (
+            <AdminDashboard 
+              products={products} setProducts={setProducts} categories={categories} setCategories={setCategories}
+              transactions={transactions} balances={balances} setBalances={setBalances}
+              storeConfig={storeConfig} setStoreConfig={setStoreConfig}
+              onLogout={() => setUserRole(null)} syncToSheets={syncToGoogleSheets}
+            />
+          )}
+        </div>
+      );
+    }
     // ==========================================
     // 1. LOGIN SCREEN
     // ==========================================
