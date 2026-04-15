@@ -152,24 +152,24 @@
               onLogout={() => { setUserRole(null); setCashierId(''); }}
               onTransactionSuccess={(trx) => {
                 const finalTrx = { ...trx, cashierId: cashierId };// Memastikan ID Kasir masuk
+                
                 setTransactions(prev => {
-                  // CEK: Jika ID transaksi sudah ada di list, jangan tambah lagi
                   const isDuplicate = prev.find(t => t.id === finalTrx.id);
                     if (isDuplicate) return prev;
                     return [finalTrx, ...prev];
                 });
                 syncToGoogleSheets('ADD_TRANSACTION', finalTrx);
                 setBalances(prev => {
-                  let newBalance = { ...prev };
-                  if (finalTrx.method === 'Cash') newBalances.kembalian += finalTrx.total;
-                  else if (finalTrx.method === 'EDC BRILink') newBalances.bank += finalTrx.total;
+                  let nb = { ...prev };
+                  if (finalTrx.method === 'Cash') nb.kembalian += finalTrx.total;
+                  else if (finalTrx.method === 'EDC BRILink') nb.bank += finalTrx.total;
                   finalTrx.items.forEach(i => {
-                    if (i.category === 'Tarik Tunai') newBalances.kembalian -= (i.price * i.qty);
-                    else if (['Pulsa', 'Paket Data'].includes(i.category)) newBalances.pulsa -= (i.price * i.qty);
-                    else if (i.category === 'Transfer') newBalances.bank -= (i.price * i.qty);
+                    if (i.category === 'Tarik Tunai') nb.kembalian -= (i.price * i.qty);
+                    else if (['Pulsa', 'Paket Data'].includes(i.category)) nb.pulsa -= (i.price * i.qty);
+                    else if (i.category === 'Transfer') nb.bank -= (i.price * i.qty);
                   });
-                  syncToGoogleSheets('UPDATE_BALANCES', newBalances);
-                  return newBalances;
+                  syncToGoogleSheets('UPDATE_BALANCES', nb);
+                  return nb;
                 });
               }}
             />
