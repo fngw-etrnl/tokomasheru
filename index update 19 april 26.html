@@ -1,0 +1,1545 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="id"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Toko Mas Heru&lt;/title&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Tailwind CSS --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- SweetAlert2 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"&gt;&lt;/script&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- React &amp; ReactDOM --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin&gt;&lt;/script&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Babel untuk kompilasi JSX di Browser --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://unpkg.com/@babel/standalone/babel.min.js"&gt;&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Google Material Icons --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" /&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- jsPDF &amp; jsPDF-AutoTable untuk Export PDF --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"&gt;&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@media print {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>@page { size: 58mm auto; margin: 0; }</p>
+<p class="p1"><span class="Apple-converted-space">          </span>body { margin: 0; padding: 0; }</p>
+<p class="p1"><span class="Apple-converted-space">          </span>#root, .no-print { display: none !important; }</p>
+<p class="p1"><span class="Apple-converted-space">          </span>#print-invoice { display: block !important; width: 58mm; padding: 4mm; font-family: 'Courier New', monospace; font-size: 9pt; background: white; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hide-scrollbar::-webkit-scrollbar { display: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.material-symbols-outlined { vertical-align: middle; font-size: inherit; }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/style&gt;</p>
+<p class="p2"><span class="Apple-converted-space">  </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;meta name="mobile-web-app-capable" content="yes"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;meta name="apple-mobile-web-app-title" content="Toko Mas Heru"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3081/3081648.png"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3081/3081648.png"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;meta name="theme-color" content="#4f46e5"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="bg-slate-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="root"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- KODE REACT APP --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script type="text/babel"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const { useState, useEffect } = React;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// --- CONFIGURATION ---</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-Um422Lqpxfi1OzEz6v9ahpu_T12lfT5jKqG6miqJ3FFAqfpOwUzfrTFaVYAPypvi/exec";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const formatRp = (number) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Fungsi agar angka ada titiknya saat diketik (1000 -&gt; 1.000)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const formatThousand = (val) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (!val) return "";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const num = val.toString().replace(/[^0-9]/g, "");</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return num ? parseInt(num).toLocaleString("id-ID") : "";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// --- KOMPONEN IKON ---</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const Icon = ({ name, className = "" }) =&gt; &lt;span className={`material-symbols-outlined ${className}`}&gt;{name}&lt;/span&gt;;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const showAlert = (options) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (window.Swal) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.Swal.fire({ fontFamily: 'sans-serif', ...options });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>alert(options.title + (options.text ? `\n${options.text}` : ''));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// FUNGSI CARI ADMIN FEE (Taruh di atas function App)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const findAdminFee = (nominal, layanan, fees) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!fees || fees.length === 0) return 0;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const match = fees.find(f =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Logika baru: Cek apakah nama layanan (misal: "Bayar Tagihan")<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// mengandung kata kategori dari Sheet (misal: "PNM")</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const categoryInSheet = f.category.toLowerCase();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const serviceInApp = layanan.toLowerCase();</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>return serviceInApp.includes(categoryInSheet) &amp;&amp;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">               </span>nominal &gt;= f.min &amp;&amp;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">               </span>nominal &lt;= f.max;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return match ? match.fee : 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function App() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [userRole, setUserRole] = useState(null);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [cashierId, setCashierId] = useState('');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [loading, setLoading] = useState(true);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [products, setProducts] = useState([]);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [categories, setCategories] = useState([]);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [transactions, setTransactions] = useState([]);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [balances, setBalances] = useState({ kembalian: 0, pulsa: 0, bank: 0 });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [storeConfig, setStoreConfig] = useState({ name: 'Toko Mas Heru', address: '', phone: '', footer: ''});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [adminFees, setAdminFees] = useState([]);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Di dalam function App()</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const handleLoginSuccess = (role, code) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setUserRole(role);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setCashierId(code);</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// SIMPAN KE MEMORI BROWSER</p>
+<p class="p1"><span class="Apple-converted-space">        </span>localStorage.setItem('tokoHeru_role', role);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>localStorage.setItem('tokoHeru_cashier', code);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const syncToGoogleSheets = async (action, data) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>await fetch(APP_SCRIPT_URL, {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>headers: { 'Content-Type': 'text/plain;charset=utf-8' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>body: JSON.stringify({ action, data, timestamp: new Date().toISOString() })</p>
+<p class="p1"><span class="Apple-converted-space">          </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} catch (error) { console.error("Sync Error:", error); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>useEffect(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const savedRole = localStorage.getItem('tokoHeru_role');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const savedCashier = localStorage.getItem('tokoHeru_cashier');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (savedRole &amp;&amp; savedCashier) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>setUserRole(savedRole);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>setCashierId(savedCashier);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const loadData = async () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const res = await fetch(APP_SCRIPT_URL, {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">              </span>headers: { 'Content-Type': 'text/plain;charset=utf-8' },</p>
+<p class="p1"><span class="Apple-converted-space">              </span>body: JSON.stringify({ action: 'GET_INITIAL_DATA' })</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const result = await res.json();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (result.status === 'success') {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>setProducts(result.data.products || []);</p>
+<p class="p1"><span class="Apple-converted-space">              </span>setCategories(result.data.categories || []);</p>
+<p class="p1"><span class="Apple-converted-space">              </span>setTransactions(result.data.transactions || []);</p>
+<p class="p1"><span class="Apple-converted-space">              </span>if (result.data.balances) setBalances(result.data.balances);</p>
+<p class="p1"><span class="Apple-converted-space">              </span>if (result.data.storeConfig) setStoreConfig(result.data.storeConfig);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (result.data.adminFees) {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>setAdminFees(result.data.adminFees);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>} catch (e) { console.error("Load Error", e); }</p>
+<p class="p1"><span class="Apple-converted-space">          </span>finally { setLoading(false); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>loadData();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}, []);</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const handleLogout = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setUserRole(null);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setCashierId('');</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// HAPUS DARI MEMORI BROWSER</p>
+<p class="p1"><span class="Apple-converted-space">        </span>localStorage.removeItem('tokoHeru_role');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>localStorage.removeItem('tokoHeru_cashier');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (loading) return &lt;div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-2xl font-bold"&gt;"Bismillah.."&lt;/div&gt;;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!userRole) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return &lt;LoginScreen onLogin={handleLoginSuccess} /&gt;;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="min-h-screen bg-slate-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{userRole === 'kasir' ? (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;KasirDashboard<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>products={products}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>categories={categories}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>storeConfig={storeConfig}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>cashierId={cashierId}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>transactions={transactions}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>adminFees={adminFees} // &lt;--- PASTIKAN INI ADA BRO!</p>
+<p class="p1"><span class="Apple-converted-space">              </span>onLogout={handleLogout}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>onTransactionSuccess={(trx) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setTransactions(prev =&gt; [trx, ...prev]);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>syncToGoogleSheets('ADD_TRANSACTION', trx);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setBalances(prev =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>const nb = { ...prev }; // Kita pakai 'nb' supaya pendek dan tidak typo</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>if (trx.method === 'Cash') nb.kembalian += trx.total;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>else if (trx.method === 'MESIN EDC') nb.bank += trx.total;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>trx.items.forEach(i =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const sub = i.price * i.qty;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if (i.category === 'Tarik Tunai') nb.kembalian -= sub;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>else if (['Pulsa', 'Paket Data'].includes(i.category)) nb.pulsa -= sub;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>else if (i.category === 'Transfer') nb.bank -= sub;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>});</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>syncToGoogleSheets('UPDATE_BALANCES', nb);</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>return nb;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>) : (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;AdminDashboard<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>products={products} setProducts={setProducts} categories={categories} setCategories={setCategories}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>transactions={transactions} balances={balances} setBalances={setBalances}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>storeConfig={storeConfig} setStoreConfig={setStoreConfig}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>onLogout={handleLogout}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>syncToSheets={syncToGoogleSheets}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// 1. LOGIN SCREEN</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function LoginScreen({ onLogin }) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [role, setRole] = useState('kasir');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [pin, setPin] = useState('');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [cashierCode, setCashierCode] = useState('');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const handleLogin = async (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>e.preventDefault();</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Validasi input kosong</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (!pin.trim() || (role === 'kasir' &amp;&amp; !cashierCode.trim())) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>showAlert({ icon: 'warning', title: 'Perhatian', text: 'Isi data dengan lengkap!' });</p>
+<p class="p1"><span class="Apple-converted-space">          </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>showAlert({<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>title: 'Memverifikasi...',<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>allowOutsideClick: false,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>didOpen: () =&gt; { window.Swal.showLoading(); }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>// Kita kirim "ADMIN" sebagai cashierCode kalau role-nya admin</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const loginData = {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cashierCode: role === 'admin' ? 'ADMIN' : cashierCode.trim().toUpperCase(),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>pin: pin.trim()</p>
+<p class="p1"><span class="Apple-converted-space">          </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>const response = await fetch(APP_SCRIPT_URL, {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>method: 'POST',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>headers: { 'Content-Type': 'text/plain;charset=utf-8' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>body: JSON.stringify({<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>action: 'CHECK_LOGIN',<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>data: loginData<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>})</p>
+<p class="p1"><span class="Apple-converted-space">          </span>});</p>
+<p class="p2"><span class="Apple-converted-space">          </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>const result = await response.json();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (result &amp;&amp; result.valid) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>window.Swal.close();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Login sukses!</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (role === 'admin') {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>onLogin('admin', 'ADMIN');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>onLogin('kasir', loginData.cashierCode);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>showAlert({<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>icon: 'error',<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>title: 'Login Gagal',<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>text: result.message || 'PIN atau Kode Salah!'<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} catch (err) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>console.error("Login Error:", err);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>showAlert({ icon: 'error', title: 'Error', text: 'Koneksi database bermasalah.' });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="text-center mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;Icon name="storefront" className="text-indigo-600 text-3xl" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;h1 className="text-2xl font-bold text-gray-800"&gt;Toko Mas Heru&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;p className="text-gray-500 text-sm mt-1"&gt;Silakan masuk untuk melanjutkan&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;form onSubmit={handleLogin} className="space-y-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button type="button" onClick={() =&gt; setRole('kasir')} className={`flex-1 py-3 rounded-xl font-medium transition-all ${role === 'kasir' ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}&gt;Mode Kasir&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button type="button" onClick={() =&gt; setRole('admin')} className={`flex-1 py-3 rounded-xl font-medium transition-all ${role === 'admin' ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}&gt;Mode Admin&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">              </span>{role === 'kasir' &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;label className="block text-sm font-medium text-gray-700 mb-2"&gt;Kode Kasir: &lt;span className="text-xs text-gray-400 font-normal"&gt;(sesuai cabang)&lt;/span&gt;&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;input type="text" value={cashierCode} onChange={(e) =&gt; setCashierCode(e.target.value)} placeholder="••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-center text-xl uppercase tracking-wider" required /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label className="block text-sm font-medium text-gray-700 mb-2"&gt;Kode PIN &lt;span className="text-xs text-gray-400 font-normal"&gt;:&lt;/span&gt;&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="password" value={pin} onChange={(e) =&gt; setPin(e.target.value)} placeholder="••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-center text-2xl tracking-[0.5em]" required /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition-all active:scale-95"&gt;MASUK&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/form&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// 2. KASIR DASHBOARD (POS)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function KasirDashboard({ products, categories, storeConfig, cashierId, transactions, adminFees, onLogout, onTransactionSuccess }) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [refNumber, setRefNumber] = useState('');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [cart, setCart] = useState([]);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [showPayment, setShowPayment] = useState(false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [paymentMethod, setPaymentMethod] = useState('Cash');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [searchQuery, setSearchQuery] = useState('');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [paymentAmount, setPaymentAmount] = useState('');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [activeCategory, setActiveCategory] = useState('Semua');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [lastInvoice, setLastInvoice] = useState(null);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [showHistory, setShowHistory] = useState(false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// const [adminFees, setAdminFees] = useState([]);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [walletName, setWalletName] = useState(''); // Tambahkan ini</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const quickActions = [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'qa1', name: 'Transfer Bank', icon: 'account_balance', color: 'bg-blue-500', options: ['BNI', 'BRI', 'ANTAR BANK'] },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'QA2', name: 'Tarik Tunai', icon: 'payments', color: 'bg-emerald-500'},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'qa2', name: 'Top Up E-Wallet', icon: 'account_balance_wallet', color: 'bg-purple-500', options: ['GOPAY', 'DANA', 'OVO', 'SHOPEEPAY'] },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'qa3', name: 'Bayar Tagihan', icon: 'receipt_long', color: 'bg-orange-500', options: ['ADIRA', 'BPJS', 'ACC FINANCE', 'PNM', 'BFI', 'HOME CREDIT', 'LAINNYA'] }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const handleQuickAction = (action) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let options = {};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (action.name === 'Transfer Bank') {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>options = { 'BNI': 'BNI', 'BRI': 'BRI', 'ANTAR BANK': 'ANTAR BANK' };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else if (action.name === 'Top Up E-Wallet') {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>options = { 'GOPAY': 'GOPAY', 'DANA': 'DANA', 'OVO': 'OVO', 'SHOPEEPAY': 'SHOPEEPAY' };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else if (action.name === 'Bayar Tagihan') {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>options = { 'ADIRA': 'ADIRA', 'BPJS': 'BPJS', 'PNM': 'PNM', 'HOME CREDIT': 'HOME CREDIT', 'LAINNYA': 'LAINNYA' };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else if (action.name === 'Tarik Tunai') {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>options = { 'BNI': 'BNI', 'BRI': 'BRI' };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.Swal.fire({</p>
+<p class="p1"><span class="Apple-converted-space">          </span>title: `Layanan ${action.name}`,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>html: `</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="text-left space-y-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>${Object.keys(options).length &gt; 0 ? `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;label class="block text-[8px] font-bold text-slate-400 mb-1 uppercase tracking-widest"&gt;Pilih Sumber:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;select id="swal-vendor" class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 font-bold"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>${Object.entries(options).map(([val, label]) =&gt; `&lt;option value="${val}"&gt;${label}&lt;/option&gt;`).join('')}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>` : ''}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest"&gt;Nominal ${action.name}:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-xl"&gt;Rp&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;input id="swal-nominal" class="w-full p-5 text-3xl font-black border-2 border-slate-100 rounded-3xl text-right focus:border-indigo-500 outline-none" placeholder="0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>`,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>showCancelButton: true,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>confirmButtonText: 'Tambah',</p>
+<p class="p1"><span class="Apple-converted-space">          </span>didOpen: () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const nom = document.getElementById('swal-nominal');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>nom.focus();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>nom.oninput = (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>let val = e.target.value.replace(/\D/g, '');</p>
+<p class="p1"><span class="Apple-converted-space">              </span>e.target.value = val ? parseInt(val).toLocaleString('id-ID') : '';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>preConfirm: () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const nominal = parseInt(document.getElementById('swal-nominal').value.replace(/\D/g, ''));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const vendor = document.getElementById('swal-vendor').value;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!nominal) return window.Swal.showValidationMessage('Isi nominal!');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Kuncinya di sini Bro:</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Kalau layanannya "Transfer Bank", kita cari "TRF [Vendor]"</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Kalau layanannya "Tarik Tunai", kita cari "TARIK [Vendor]"</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let keyword = "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (action.name === 'Transfer Bank') keyword = `TRF ${vendor}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>else if (action.name === 'Tarik Tunai') keyword = `TARIK ${vendor}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>else keyword = vendor; // Untuk BPJS, PNM, dll tetap normal</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const fee = findAdminFee(nominal, keyword, adminFees);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return { nominal, vendor, fee, keyword };</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}).then(res =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (res.isConfirmed) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const { nominal, vendor, fee } = res.value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const newItem = {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>id: `QA-${Date.now()}`,</p>
+<p class="p1"><span class="Apple-converted-space">              </span>name: vendor ? `${action.name} (${vendor})` : action.name,</p>
+<p class="p1"><span class="Apple-converted-space">              </span>price: nominal + fee,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>category: action.name,</p>
+<p class="p1"><span class="Apple-converted-space">              </span>qty: 1,</p>
+<p class="p1"><span class="Apple-converted-space">              </span>note: `Nominal: ${nominal}, Admin: ${fee}`</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>setCart(prev =&gt; [...prev, newItem]);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const formatRp = (number) =&gt; new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const filteredProducts = products.filter(p =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const matchCat = activeCategory === 'Semua' || p.category === activeCategory;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return matchCat &amp;&amp; matchSearch;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const updateQty = (id, delta) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setCart(prevCart =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>return prevCart.map(item =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (item.id === id) {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>// Jika ini produk custom (ID mengandung timestamp/strip), jangan izinkan tambah Qty</p>
+<p class="p1"><span class="Apple-converted-space">              </span>// Lebih baik input ulang saja nominalnya agar tercatat sebagai transaksi terpisah</p>
+<p class="p1"><span class="Apple-converted-space">              </span>if (item.id.includes('-')) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (delta &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>showAlert({ icon: 'info', title: 'Info', text: 'Untuk nominal custom, silakan tambah item baru dari menu.' });</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>return item;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}</p>
+<p class="p2"><span class="Apple-converted-space">              </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>const newQty = Math.max(1, item.qty + delta);</p>
+<p class="p1"><span class="Apple-converted-space">              </span>return { ...item, qty: newQty };</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>return item;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// --- FUNGSI KERANJANG ---</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const addToCart = (p) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (p.price === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>window.Swal.fire({</p>
+<p class="p1"><span class="Apple-converted-space">                </span>title: `Input Nominal ${p.name}`,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>html: `</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mt-4 text-left"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest"&gt;Jumlah (Rupiah):&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-xl"&gt;Rp&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;input id="swal-input-nominal" class="w-full p-5 text-3xl font-black border-2 border-slate-100 rounded-3xl text-right focus:border-indigo-500 outline-none" placeholder="0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>`,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>showCancelButton: true,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>confirmButtonText: 'Tambah',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>confirmButtonColor: '#4f46e5',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>didOpen: () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const input = document.getElementById('swal-input-nominal');</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>input.focus();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>input.addEventListener('input', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>let raw = e.target.value.replace(/[^0-9]/g, '');</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>e.target.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                </span>},</p>
+<p class="p1"><span class="Apple-converted-space">                </span>preConfirm: () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>const inputVal = document.getElementById('swal-input-nominal').value;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>const nominal = parseInt(inputVal.replace(/\D/g, ''));</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>if (!nominal || nominal &lt;= 0) return window.Swal.showValidationMessage('Isi nominal!');</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>// PERBAIKAN: Cari fee berdasarkan nama produk (p.name)</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>const fee = findAdminFee(nominal, p.name, adminFees);<span class="Apple-converted-space"> </span></p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>return { nominal, fee }; // Balikin cuma nominal &amp; fee</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}).then(res =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (res.isConfirmed) {</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>const { nominal, fee } = res.value;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>const newItem = {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>id: `PROD-${Date.now()}`,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>name: `${p.name}`,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>price: nominal + fee, // Otomatis nambahin fee ke harga</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>category: p.category,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>qty: 1,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>note: `Nominal: ${nominal}, Admin: ${fee}`</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>};</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>setCart(prev =&gt; [...prev, newItem]);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>});</p>
+<p class="p1"><span class="Apple-converted-space">              </span>return; // Supaya gak lanjut ke logika produk biasa di bawah</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// LOGIKA UNTUK PRODUK BIASA (DENGAN CEK STOK)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setCart(prevCart =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const existingItem = prevCart.find(item =&gt; item.id === p.id);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (existingItem) {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>// Cek stok jika ada batasnya</p>
+<p class="p1"><span class="Apple-converted-space">              </span>if (p.stock !== undefined &amp;&amp; existingItem.qty &gt;= p.stock) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>showAlert({ icon: 'error', title: 'Stok Habis', text: 'Barang tidak mencukupi!' });</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return prevCart;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>return prevCart.map(item =&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>item.id === p.id ? { ...item, qty: item.qty + 1 } : item</p>
+<p class="p1"><span class="Apple-converted-space">              </span>);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>return [...prevCart, { ...p, qty: 1 }];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const removeFromCart = (id) =&gt; setCart(prev =&gt; prev.filter(item =&gt; item.id !== id));</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const totalBelanja = cart.reduce((sum, item) =&gt; sum + (item.price * item.qty), 0);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const handleCheckout = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (cart.length === 0) return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setShowPayment(true);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setPaymentAmount('');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const shareToWhatsApp = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (!lastInvoice) return;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const itemDetail = lastInvoice.items.map(i =&gt; `* ${i.name} (x${i.qty}) - ${formatRp(i.price * i.qty)}`).join('%0A');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const text = `*${storeConfig.name}*%0A` +</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>`ID: ${lastInvoice.id}%0A` +</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>`Tanggal: ${new Date(lastInvoice.date).toLocaleString('id-ID')}%0A` +</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>`--------------------------%0A` +</p>
+<p class="p2"><span class="Apple-converted-space">                     </span></p>
+<p class="p1"><span class="Apple-converted-space">                     </span>`${itemDetail}%0A` +</p>
+<p class="p2"><span class="Apple-converted-space">                     </span></p>
+<p class="p1"><span class="Apple-converted-space">                     </span>`--------------------------%0A` +</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>`*TOTAL: ${formatRp(lastInvoice.total)}*%0A` +</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>`Bayar: ${formatRp(lastInvoice.payment)}%0A` +</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>`Kembali: ${formatRp(lastInvoice.change)}%0A%0A` +</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>`${storeConfig.footer}`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.open(`https://wa.me/?text=${text}`, '_blank');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const downloadStrukImage = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const element = document.getElementById('print-invoice');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>element.classList.remove('hidden'); // Munculkan sebentar buat difoto</p>
+<p class="p1"><span class="Apple-converted-space">        </span>html2canvas(element).then(canvas =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const link = document.createElement('a');</p>
+<p class="p1"><span class="Apple-converted-space">          </span>link.download = `Struk-${lastInvoice.id}.png`;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>link.href = canvas.toDataURL();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>link.click();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>element.classList.add('hidden'); // Sembunyikan lagi</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const processPayment = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const bayar = parseInt(paymentAmount.replace(/\D/g, '')) || 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (bayar &lt; totalBelanja) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>showAlert({ icon: 'error', title: 'Uang Kurang' });</p>
+<p class="p1"><span class="Apple-converted-space">          </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const safeWalletName = typeof walletName !== 'undefined' ? walletName : '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const finalMethod = paymentMethod === 'E-Wallet' ? `E-Wallet (${safeWalletName || 'Digital'})` : paymentMethod;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const transactionData = {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>id: `INV-${Date.now().toString().slice(-6)}`,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>date: new Date().toISOString(),<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>cashierId: cashierId,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>items: cart,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>total: totalBelanja,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>payment: bayar,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>change: bayar - totalBelanja,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>method: finalMethod,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>refNumber: refNumber<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (typeof setWalletName === 'function') setWalletName(''); // Reset nama wallet setelah sukses</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setLastInvoice(transactionData);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>onTransactionSuccess(transactionData);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Bersihkan keranjang dan tutup modal bayar</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setCart([]);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setShowPayment(false);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setRefNumber('');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (typeof setWalletName === 'function') setWalletName('');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setIsMobileCartOpen(false);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Tampilkan notifikasi sukses tanpa auto-print</p>
+<p class="p1"><span class="Apple-converted-space">        </span>showAlert({</p>
+<p class="p1"><span class="Apple-converted-space">          </span>icon: 'success',</p>
+<p class="p1"><span class="Apple-converted-space">          </span>title: 'Transaksi Berhasil!',</p>
+<p class="p1"><span class="Apple-converted-space">          </span>text: 'Struk digital telah siap.',</p>
+<p class="p1"><span class="Apple-converted-space">          </span>timer: 1500,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>showConfirmButton: false</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="flex h-screen overflow-hidden bg-gray-100 relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="flex-1 flex flex-col h-full overflow-hidden no-print"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* Header */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="bg-white px-6 py-4 shadow-sm flex items-center justify-between z-10"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 className="text-xl font-bold text-gray-800"&gt;{storeConfig.name}&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;p className="text-sm text-gray-500"&gt;Kasir: {cashierId}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex items-center gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" placeholder="Cari menu..." value={searchQuery} onChange={(e) =&gt; setSearchQuery(e.target.value)} className="pl-4 pr-4 py-2 border rounded-full bg-gray-50 w-64" /&gt;</p>
+<p class="p2"><span class="Apple-converted-space">              </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>{/* Menu Riwayat Transaksi Dropdown */}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;button onClick={() =&gt; setShowHistory(!showHistory)} className="flex items-center gap-2 px-3 py-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;Icon name="history" className="text-lg" /&gt; &lt;span className="hidden md:inline"&gt;Riwayat&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{showHistory &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="p-3 border-b border-gray-100 bg-gray-50 font-bold text-gray-700 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span&gt;Riwayat Terakhir&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button onClick={() =&gt; setShowHistory(false)} className="text-gray-400 hover:text-gray-600"&gt;&lt;Icon name="close" className="text-base" /&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="max-h-64 overflow-y-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{transactions.length === 0 ? (</p>
+<p class="p1"><span class="Apple-converted-space">                           </span>&lt;div className="p-4 text-center text-gray-500 text-sm"&gt;Belum ada transaksi&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>) : (</p>
+<p class="p1"><span class="Apple-converted-space">                           </span>transactions.slice(0, 10).map(trx =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>&lt;div key={trx.id} className="p-3 border-b border-gray-50 hover:bg-gray-50 text-sm"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                               </span>&lt;div className="flex justify-between items-start mb-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                 </span>&lt;span className="font-bold text-gray-800"&gt;{trx.id}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                 </span>&lt;span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded"&gt;{trx.cashierId || '-'}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                               </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                               </span>&lt;div className="text-xs text-gray-500 mb-1"&gt;{new Date(trx.date).toLocaleString('id-ID')}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                               </span>&lt;div className="text-indigo-600 font-bold"&gt;{formatRp(trx.total)}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                           </span>))</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button onClick={onLogout} className="flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;Icon name="logout" className="text-lg" /&gt; &lt;span className="hidden md:inline"&gt;Keluar&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* Banner Kasir */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="px-4 md:px-6 pt-4 shrink-0 no-print"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="w-full h-28 bg-indigo-100 rounded-2xl overflow-hidden relative shadow-sm"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>&lt;img src="https://media.istockphoto.com/id/1163012737/id/foto/pelanggan-cantik-yang-ramah-di-kasir-tersenyum-di-kasir-pria-sementara-dia-memindai-produk-di.jpg?s=612x612&amp;w=0&amp;k=20&amp;c=Pgsa-wtrHygwzVpakS5-E6tCAJuC7uvW6_n2np9Fy08=" alt="Promo Banner" className="w-full h-full object-cover opacity-80" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>&lt;div className="absolute inset-0 bg-gradient-to-r from-indigo-900/90 to-transparent flex items-center p-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                   </span>&lt;div className="text-white"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>&lt;h3 className="text-xl font-bold mb-1"&gt;Selamat Datang, Kasir {cashierId || 'Pagi'}!&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>&lt;p className="text-sm opacity-90"&gt;Tetap semangat melayani pelanggan hari ini.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                   </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* Menu Kategori */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="px-4 md:px-6 py-4 flex gap-3 overflow-x-auto hide-scrollbar"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button onClick={() =&gt; setActiveCategory('Semua')} className={`px-5 py-2 rounded-full font-medium whitespace-nowrap transition-all ${activeCategory === 'Semua' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}&gt;Favorit&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{categories.map(cat =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button key={cat.id} onClick={() =&gt; setActiveCategory(cat.name)} className={`px-5 py-2 rounded-full font-medium whitespace-nowrap transition-all ${activeCategory === cat.name ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}&gt;{cat.name}&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* SEKSI AKSI CEPAT */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="px-4 md:px-6 mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="bg-gradient-to-br from-indigo-500 to-purple-600 backdrop-blur-md rounded-[2rem] p-6 shadow-md"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="grid grid-cols-2 md:grid-cols-4 gap-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{quickActions.map((action) =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>key={action.id}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>onClick={() =&gt; handleQuickAction({ ...action, price: 0, category: action.name.split(' ')[1] || 'Layanan' })}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>className="group flex flex-col items-center justify-center p-4 bg-white rounded-2xl border-2 indigo-500 hover:border-amber-500 hover:bg-grey-500/50 hover:shadow-xl transition-all active:scale-95"</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className={`${action.color} text-white p-3 rounded-2xl mb-2 shadow-lg shadow-gray-200 group-hover:scale-110 transition-transform`}&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;Icon name={action.icon} className="text-2xl" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;span className="text-[10px] font-black text-slate-600 uppercase tracking-tight text-center"&gt;{action.name}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* Tambahkan padding bottom ekstra (pb-24) di HP agar tidak tertutup tombol melayang */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="flex-1 overflow-y-auto px-4 md:px-6 pb-24 md:pb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{/* DAFTAR PRODUK - Ukuran diperkecil */}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 pb-24"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{filteredProducts.map(product =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>key={product.id}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>onClick={() =&gt; addToCart(product)}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 hover:border-indigo-400 cursor-pointer transition-all active:scale-95 flex flex-col h-full"</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>{/* Box Ikon/Gambar diperkecil h-20 */}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className="h-20 bg-slate-50 rounded-xl mb-2 flex items-center justify-center overflow-hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>{product.image ? (</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;img<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>src={product.image}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>alt={product.name}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>className="w-full h-full object-cover shadow-inner"</p>
+<p class="p1"><span class="Apple-converted-space">                                        </span>onError={(e) =&gt; { e.target.src = 'https://via.placeholder.com/150?text=No+Image'; }} // Jika link mati</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>) : (</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;Icon name="inventory_2" className="text-slate-200 text-2xl" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                            </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>{/* Teks diperkecil pakai text-[11px] */}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h4 className="font-bold text-[11px] uppercase text-slate-700 line-clamp-1 mb-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>{product.name}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/h4&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                            </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className="flex justify-between items-end mt-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;p className="text-indigo-600 font-black text-xs"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>{product.price === 0 ? "Nominal" : formatRp(product.price)}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span className="text-[9px] text-slate-300 font-bold"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>Stok: {product.stock}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* TOMBOL MELAYANG KHUSUS HP (Tampil jika keranjang tidak sedang dibuka) */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{!isMobileCartOpen &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="md:hidden fixed bottom-4 left-4 right-4 z-30"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>onClick={() =&gt; setIsMobileCartOpen(true)}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>className="w-full bg-indigo-600 text-white rounded-2xl shadow-xl p-4 flex justify-between items-center font-bold active:scale-95 transition-transform"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="flex items-center gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="bg-white/20 p-2 rounded-lg relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;Icon name="shopping_cart" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{cart.length &gt; 0 &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>{cart.length}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span&gt;Lihat Pesanan&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span&gt;{formatRp(totalBelanja)}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>)}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>{/* PANEL KERANJANG - Modal di HP, atau Sidebar penuh di Desktop */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className={`${isMobileCartOpen ? 'fixed inset-0 z-40 flex flex-col bg-white' : 'hidden md:flex md:w-[400px] bg-white shadow-xl flex-col no-print border-l border-gray-200 z-20 relative h-full'}`}&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>{/* Header Keranjang untuk Mobile (Memiliki tombol close) */}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="md:hidden p-4 border-b border-gray-100 flex justify-between items-center bg-indigo-600 text-white"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 className="text-xl font-bold flex items-center gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;Icon name="shopping_cart" /&gt; Pesanan ({cart.length})</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button onClick={() =&gt; setIsMobileCartOpen(false)} className="p-1 hover:bg-indigo-500 rounded-lg"&gt;&lt;Icon name="close" /&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>{/* Header Keranjang Desktop */}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="hidden md:flex p-4 md:p-5 border-b border-gray-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 className="text-xl font-bold text-gray-800 flex items-center gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;Icon name="shopping_cart" className="text-indigo-600" /&gt; Pesanan ({cart.length})</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="flex-1 overflow-y-auto p-4 space-y-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{cart.length === 0 ? (</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;Icon name="shopping_cart" className="text-5xl opacity-30" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p&gt;Keranjang masih kosong&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>) : (</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>cart.map(item =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className="flex-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;h4 className="font-medium text-gray-800 line-clamp-1"&gt;{item.name}&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;div className="text-indigo-600 font-bold text-sm"&gt;{formatRp(item.price)}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 p-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;button onClick={() =&gt; updateQty(item.id, -1)} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-md"&gt;-&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span className="w-4 md:w-6 text-center font-medium text-sm"&gt;{item.qty}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;button onClick={() =&gt; updateQty(item.id, 1)} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-md"&gt;+&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button onClick={() =&gt; removeFromCart(item.id)} className="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-md"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;Icon name="delete" className="text-base" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>))</p>
+<p class="p1"><span class="Apple-converted-space">                </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="p-4 md:p-5 bg-gray-50 border-t border-gray-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="flex justify-between items-center mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span className="text-gray-500 font-medium"&gt;Total&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;span className="text-2xl font-bold text-gray-800"&gt;{formatRp(totalBelanja)}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button onClick={handleCheckout} disabled={cart.length === 0} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;Icon name="attach_money" /&gt; Bayar</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* MODAL PEMBAYARAN - VERSI SEMPURNA */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{showPayment &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3 className="text-2xl font-bold mb-2 text-center text-gray-700"&gt;Total Tagihan&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="text-4xl font-black text-indigo-600 mb-8 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{formatRp(totalBelanja)}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="space-y-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;label className="block font-bold text-gray-700"&gt;Metode Bayar:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="grid grid-cols-2 gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{/* Tombol Cash &amp; E-Wallet tetap sama */}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button onClick={() =&gt; setPaymentMethod('Cash')} className={`py-3 rounded-xl font-bold border-2 ${paymentMethod === 'Cash' ? 'border-indigo-600 bg-indigo-50 text-indigo-600' : 'border-gray-100 bg-gray-50 text-gray-500'}`}&gt;Cash&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{/* Tombol E-Wallet sekarang punya warna ungu khas digital payment */}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button onClick={() =&gt; setPaymentMethod('E-Wallet')} className={`py-3 rounded-xl font-bold border-2 ${paymentMethod === 'E-Wallet' ? 'border-purple-600 bg-purple-50 text-purple-600' : 'border-gray-100 bg-gray-50 text-gray-500'}`}&gt;E-Wallet&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{/* Tombol MESIN EDC &amp; TRANSFER */}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button onClick={() =&gt; setPaymentMethod('MESIN EDC')} className={`py-3 rounded-xl font-bold border-2 ${paymentMethod === 'MESIN EDC' ? 'border-blue-600 bg-blue-50 text-blue-600' : 'border-gray-100 bg-gray-50 text-gray-500'}`}&gt;MESIN EDC&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button onClick={() =&gt; setPaymentMethod('TRANSFER')} className={`py-3 rounded-xl font-bold border-2 ${paymentMethod === 'TRANSFER' ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-gray-100 bg-gray-50 text-gray-500'}`}&gt;TRANSFER&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{/* Logika: Munculkan input nomor referensi jika pilih MESIN EDC atau TRANSFER */}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{(paymentMethod === 'MESIN EDC' || paymentMethod === 'TRANSFER') &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="animate-fade-in"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;label className="block text-sm font-bold text-gray-600 mb-1"&gt;Nama Bank &amp; No. Transaksi {paymentMethod}:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;input<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                </span>type="text"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                </span>value={refNumber}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                </span>onChange={(e) =&gt; setRefNumber(e.target.value)}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                </span>placeholder="Contoh: BRI-12345.."<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                </span>className="w-full p-3 bg-yellow-50 border-2 border-yellow-200 rounded-xl focus:outline-none focus:border-yellow-400"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>)}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{/* INPUT KHUSUS E-WALLET (NAMA &amp; NOMOR TRANSAKSI) */}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{paymentMethod === 'E-Wallet' &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="space-y-3 animate-fade-in bg-purple-50 p-4 rounded-2xl border border-purple-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;label className="block text-xs font-bold text-purple-400 mb-1 uppercase"&gt;Nama E-Wallet:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;select<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>value={walletName}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>onChange={(e) =&gt; setWalletName(e.target.value)}</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>className="w-full p-3 bg-white border-2 border-purple-100 rounded-xl outline-none focus:border-purple-500 font-bold text-purple-700"</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;option value=""&gt;-- PILIH E-WALLET --&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;option value="DANA"&gt;DANA&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;option value="GOPAY"&gt;GOPAY&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;option value="OVO"&gt;OVO&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;option value="SHOPEEPAY"&gt;SHOPEEPAY&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>&lt;option value="LAINNYA"&gt;LAINNYA&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;label className="block text-xs font-bold text-purple-400 mb-1 uppercase"&gt;Nomor Transaksi:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;input<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>type="text"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>value={refNumber}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>onChange={(e) =&gt; setRefNumber(e.target.value)}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>placeholder="Masukkan ref / ID transaksi..."<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>className="w-full p-3 bg-white border-2 border-purple-100 rounded-xl outline-none focus:border-purple-500 font-bold"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                                </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>)}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="pt-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label className="block font-bold text-gray-700 mb-1"&gt;Uang Diterima:&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400 text-xl"&gt;Rp&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;input<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>type="text"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>value={paymentAmount ? new Intl.NumberFormat('id-ID').format(paymentAmount) : ''}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>onChange={(e) =&gt; setPaymentAmount(e.target.value.replace(/\D/g, ''))}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>placeholder="0"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>className="w-full pl-12 pr-4 py-4 text-2xl font-bold border-2 border-gray-200 rounded-2xl text-right focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>autoFocus<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{/* MENAMPILKAN JUMLAH KEMBALIAN */}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{paymentAmount &gt; 0 &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300 animate-fade-in"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div className="flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span className="text-gray-500 font-medium text-sm"&gt;Kembalian:&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;span className={`text-xl font-bold ${paymentAmount - totalBelanja &lt; 0 ? 'text-red-500' : 'text-green-600'}`}&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>{formatRp(paymentAmount - totalBelanja)}</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>{paymentAmount - totalBelanja &lt; 0 &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p className="text-[10px] text-red-400 text-right mt-1"&gt;* Uang yang diterima masih kurang&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>)}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="flex gap-3 pt-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button onClick={() =&gt; { setShowPayment(false); setPaymentAmount(''); }} className="flex-1 py-4 bg-gray-100 rounded-2xl font-bold text-gray-500 hover:bg-gray-200 transition-colors"&gt;BATAL&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>onClick={processPayment}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>disabled={paymentAmount &lt; totalBelanja}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>className={`flex-1 py-4 rounded-2xl font-bold shadow-lg transition-all ${paymentAmount &lt; totalBelanja ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-green-600 text-white shadow-green-200 hover:bg-green-700 active:scale-95'}`}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>CETAK STRUK</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>)}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>{/* TAMPILAN STRUK DIGITAL SETELAH BAYAR */}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{lastInvoice &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 overflow-y-auto no-print"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="bg-white p-6 rounded-3xl w-full max-w-sm shadow-2xl animate-fade-in"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>{/* Visual Struk yang akan dicetak/disimpan */}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="print-invoice" className="bg-white text-black font-mono text-[10pt] p-4 mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="text-center border-b border-dashed border-gray-300 pb-2 mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 className="font-bold text-lg"&gt;{storeConfig.name}&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p className="text-[8pt]"&gt;{storeConfig.address}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p className="text-[8pt]"&gt;Telp: {storeConfig.phone}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="text-[8pt] mb-2 space-y-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="flex justify-between"&gt;&lt;span&gt;ID: {lastInvoice.id}&lt;/span&gt;&lt;span&gt;{lastInvoice.cashierId}&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p&gt;{new Date(lastInvoice.date).toLocaleString('id-ID')}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="border-b border-dashed border-gray-300 mb-2"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;table className="w-full text-[8pt] mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{lastInvoice.items.map((item, i) =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;tr key={i} className="align-top"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>&lt;td className="py-1"&gt;{item.name} x{item.qty}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>&lt;td className="text-right py-1"&gt;{formatRp(item.price * item.qty)}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/table&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="border-b border-dashed border-gray-300 mb-2"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="space-y-1 text-[9pt]"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="flex justify-between font-bold"&gt;&lt;span&gt;TOTAL&lt;/span&gt;&lt;span&gt;{formatRp(lastInvoice.total)}&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="flex justify-between"&gt;&lt;span&gt;BAYAR ({lastInvoice.method})&lt;/span&gt;&lt;span&gt;{formatRp(lastInvoice.payment)}&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="flex justify-between font-bold"&gt;&lt;span&gt;KEMBALI&lt;/span&gt;&lt;span&gt;{formatRp(lastInvoice.change)}&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{lastInvoice.refNumber &amp;&amp; &lt;div className="mt-2 text-[7pt] italic text-gray-500"&gt;Ref: {lastInvoice.refNumber}&lt;/div&gt;}</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="text-center mt-4 text-[7pt] border-t border-dashed border-gray-300 pt-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{storeConfig.footer || "Terima Kasih Atas Kunjungan Anda"}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>{/* Tombol Aksi */}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="grid grid-cols-2 gap-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;button onClick={() =&gt; window.print()} className="bg-indigo-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-bold active:scale-95 transition-all"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;Icon name="print" /&gt; Cetak</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;button onClick={shareToWhatsApp} className="bg-green-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-bold active:scale-95 transition-all"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;Icon name="share" /&gt; WhatsApp</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;button onClick={downloadStrukImage} className="bg-blue-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-bold active:scale-95 transition-all col-span-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;Icon name="image" /&gt; Simpan Gambar</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;button onClick={() =&gt; setLastInvoice(null)} className="bg-gray-100 text-gray-600 py-3 rounded-xl font-bold active:scale-95 transition-all col-span-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>Tutup</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// 3. ADMIN DASHBOARD</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function AdminDashboard({ products, setProducts, categories, setCategories, transactions, balances, setBalances, storeConfig, setStoreConfig, onLogout, syncToSheets }) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [activeTab, setActiveTab] = useState('dashboard');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const totalPendapatan = transactions.reduce((sum, trx) =&gt; sum + trx.total, 0);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const navItems = [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'products', label: 'Kelola Barang', icon: 'inventory_2' },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'categories', label: 'Kategori', icon: 'sell' },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'balances', label: 'Informasi Saldo', icon: 'account_balance_wallet' },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'history', label: 'Riwayat Transaksi', icon: 'history' },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{ id: 'settings', label: 'Pengaturan', icon: 'settings' },</p>
+<p class="p1"><span class="Apple-converted-space">      </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="flex flex-col md:flex-row h-screen bg-slate-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="w-full md:w-64 bg-slate-900 text-white flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="p-4 md:p-6 border-r md:border-r-0 md:border-b border-slate-800 flex items-center md:items-start shrink-0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;h2 className="text-xl font-bold text-white flex items-center gap-2"&gt;&lt;Icon name="bar_chart" className="text-indigo-400" /&gt; &lt;span className="hidden md:inline"&gt;Admin Panel&lt;/span&gt;&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;nav className="flex-1 flex flex-row md:flex-col p-2 md:p-4 md:space-y-2 gap-2 md:gap-0 shrink-0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{navItems.map(item =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button key={item.id} onClick={() =&gt; setActiveTab(item.id)} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${activeTab === item.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;Icon name={item.icon} /&gt; &lt;span className="font-medium hidden md:inline"&gt;{item.label}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/nav&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="p-2 md:p-4 border-l md:border-l-0 md:border-t border-slate-800 shrink-0 flex items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button onClick={onLogout} className="w-full flex items-center justify-center md:justify-start gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;Icon name="logout" /&gt; &lt;span className="font-medium hidden md:inline"&gt;Keluar&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="flex-1 flex flex-col overflow-hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="bg-white border-b border-gray-200 px-4 md:px-8 py-5 flex items-center justify-between"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;h1 className="text-xl md:text-2xl font-bold text-gray-800"&gt;{navItems.find(i =&gt; i.id === activeTab)?.label}&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex items-center gap-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span className="bg-lime-100 text-lime-700 px-3 py-1 rounded-full text-xs md:text-sm font-semibold flex items-center gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"&gt;&lt;/span&gt; &lt;span className="hidden md:inline"&gt;Online&lt;/span&gt;Connected</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="flex-1 overflow-y-auto p-4 md:p-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{activeTab === 'dashboard' &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="space-y-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{/* Banner Admin */}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="w-full h-32 md:h-40 bg-indigo-100 rounded-2xl overflow-hidden relative shadow-sm"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>&lt;img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Admin Banner" className="w-full h-full object-cover opacity-80" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>&lt;div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-transparent flex items-center p-6 md:p-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                       </span>&lt;div className="text-white"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>&lt;h2 className="text-2xl font-bold mb-1"&gt;Ringkasan Performa Toko&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>&lt;p className="text-sm opacity-90"&gt;Pantau pendapatan, kelola produk, dan cek mutasi saldo dengan mudah.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                       </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                     </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="grid grid-cols-1 md:grid-cols-3 gap-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center"&gt;&lt;Icon name="attach_money" className="text-3xl" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div&gt;&lt;p className="text-gray-500 text-sm font-medium"&gt;Total Pendapatan&lt;/p&gt;&lt;h3 className="text-xl md:text-2xl font-bold text-gray-800"&gt;{formatRp(totalPendapatan)}&lt;/h3&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="w-14 h-14 bg-green-100 text-green-600 rounded-xl flex items-center justify-center"&gt;&lt;Icon name="shopping_cart" className="text-3xl" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div&gt;&lt;p className="text-gray-500 text-sm font-medium"&gt;Total Transaksi&lt;/p&gt;&lt;h3 className="text-xl md:text-2xl font-bold text-gray-800"&gt;{transactions.length} Transaksi&lt;/h3&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="w-14 h-14 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center"&gt;&lt;Icon name="inventory_2" className="text-3xl" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div&gt;&lt;p className="text-gray-500 text-sm font-medium"&gt;Total Produk&lt;/p&gt;&lt;h3 className="text-xl md:text-2xl font-bold text-gray-800"&gt;{products.length} Item&lt;/h3&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="p-6 border-b border-gray-100 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;h3 className="font-bold text-lg text-gray-800"&gt;Transaksi Terbaru&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;button onClick={() =&gt; setActiveTab('history')} className="text-indigo-600 text-sm font-medium hover:underline flex items-center"&gt;Lihat Semua &lt;Icon name="chevron_right" /&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="overflow-x-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;table className="w-full text-left border-collapse min-w-[500px]"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>&lt;tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;th className="p-4 font-medium"&gt;ID Transaksi&lt;/th&gt;&lt;th className="p-4 font-medium"&gt;Waktu&lt;/th&gt;&lt;th className="p-4 font-medium"&gt;Item&lt;/th&gt;&lt;th className="p-4 font-medium"&gt;Total Belanja&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>{transactions.slice(0, 5).map((trx) =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr key={trx.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>&lt;td className="p-4 font-medium text-gray-800"&gt;{trx.id}&lt;/td&gt;&lt;td className="p-4 text-gray-500"&gt;{new Date(trx.date).toLocaleString('id-ID')}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>&lt;td className="p-4 text-gray-600"&gt;{trx.items.length} Item&lt;/td&gt;&lt;td className="p-4 font-bold text-green-600"&gt;{formatRp(trx.total)}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>{transactions.length === 0 &amp;&amp; &lt;tr&gt;&lt;td colSpan="4" className="p-8 text-center text-gray-400"&gt;Belum ada transaksi&lt;/td&gt;&lt;/tr&gt;}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">              </span>{activeTab === 'products' &amp;&amp; &lt;AdminProducts products={products} setProducts={setProducts} categories={categories} syncToSheets={syncToSheets} /&gt;}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{activeTab === 'categories' &amp;&amp; &lt;AdminCategories categories={categories} setCategories={setCategories} syncToSheets={syncToSheets} /&gt;}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{activeTab === 'balances' &amp;&amp; &lt;AdminBalances balances={balances} setBalances={setBalances} syncToSheets={syncToSheets} /&gt;}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{/* === MENGIRIM PROP storeConfig KE KOMPONEN HISTORY === */}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{activeTab === 'history' &amp;&amp; &lt;AdminHistory transactions={transactions} storeConfig={storeConfig} /&gt;}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{activeTab === 'settings' &amp;&amp; &lt;AdminSettings storeConfig={storeConfig} setStoreConfig={setStoreConfig} syncToSheets={syncToSheets} /&gt;}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// --- SUB COMPONENTS FOR ADMIN ---</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function AdminBalances({ balances, setBalances, syncToSheets }) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [editKey, setEditKey] = useState(null);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [editValue, setEditValue] = useState('');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const openEdit = (key, value) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setEditKey(key);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setEditValue(value.toString());</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const saveEdit = (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const val = parseInt(editValue.replace(/\D/g, '')) || 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const newBalances = { ...balances, [editKey]: val };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setBalances(newBalances);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>syncToSheets('UPDATE_BALANCES', newBalances);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setEditKey(null);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>showAlert({ icon: 'success', title: 'Tersimpan', text: 'Saldo berhasil diperbarui.' });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const formatInput = (val) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const num = val.replace(/\D/g, '');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return num ? new Intl.NumberFormat('id-ID').format(num) : '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="border-b border-gray-100 pb-4 mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3 className="font-bold text-lg text-gray-800 flex items-center gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;Icon name="account_balance_wallet" className="text-indigo-600"/&gt; Informasi &amp; Kelola Saldo</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p className="text-sm text-gray-500 mt-1"&gt;Kelola modal laci fisik, saldo otomatis pulsa, dan saldo bank.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="grid grid-cols-1 md:grid-cols-3 gap-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="bg-blue-50 border border-blue-100 p-5 rounded-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex items-center gap-3 mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="bg-blue-100 p-2 rounded-lg text-blue-600"&gt;&lt;Icon name="payments" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h4 className="font-bold text-gray-700"&gt;Saldo Kembalian / Laci&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;p className="text-sm text-gray-500 mb-4 h-12"&gt;Modal awal dan uang di laci fisik (bertambah sesuai total checkout).&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="text-2xl font-bold text-blue-700 mb-4"&gt;{formatRp(balances.kembalian)}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button onClick={() =&gt; openEdit('kembalian', balances.kembalian)} className="w-full bg-white text-blue-600 border border-blue-200 py-2 rounded-lg font-medium hover:bg-blue-100 transition"&gt;Set Saldo Kembalian&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="bg-green-50 border border-green-100 p-5 rounded-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex items-center gap-3 mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="bg-green-100 p-2 rounded-lg text-green-600"&gt;&lt;Icon name="sim_card" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h4 className="font-bold text-gray-700"&gt;Saldo Pulsa &amp; Data&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;p className="text-sm text-gray-500 mb-4 h-12"&gt;Sisa saldo provider (berkurang otomatis saat kategori Pulsa/Data terjual).&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="text-2xl font-bold text-green-700 mb-4"&gt;{formatRp(balances.pulsa)}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button onClick={() =&gt; openEdit('pulsa', balances.pulsa)} className="w-full bg-white text-green-600 border border-green-200 py-2 rounded-lg font-medium hover:bg-green-100 transition"&gt;Set / Top Up Saldo Pulsa&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="bg-orange-50 border border-orange-100 p-5 rounded-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex items-center gap-3 mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="bg-orange-100 p-2 rounded-lg text-orange-600"&gt;&lt;Icon name="account_balance" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h4 className="font-bold text-gray-700"&gt;Saldo Bank / Transfer&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;p className="text-sm text-gray-500 mb-4 h-12"&gt;Sisa saldo rekening (berkurang otomatis saat kategori Transfer terjual).&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="text-2xl font-bold text-orange-700 mb-4"&gt;{formatRp(balances.bank)}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button onClick={() =&gt; openEdit('bank', balances.bank)} className="w-full bg-white text-orange-600 border border-orange-200 py-2 rounded-lg font-medium hover:bg-orange-100 transition"&gt;Set / Top Up Saldo Bank&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>{editKey &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;h3 className="font-bold text-lg"&gt;Ubah Saldo&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;button onClick={() =&gt; setEditKey(null)} className="text-gray-400 hover:text-gray-600"&gt;&lt;Icon name="close" /&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;form onSubmit={saveProduct} className="p-6 space-y-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Nama Barang&lt;/label&gt;&lt;input required type="text" value={formData.name} onChange={e =&gt; setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="grid grid-cols-2 gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Kategori&lt;/label&gt;&lt;select required value={formData.category} onChange={e =&gt; setFormData({...formData, category: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white"&gt;{categories.map(c =&gt; &lt;option key={c.id} value={c.name}&gt;{c.name}&lt;/option&gt;)}&lt;/select&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Stok&lt;/label&gt;&lt;input required type="number" value={formData.stock} onChange={e =&gt; setFormData({...formData, stock: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Harga (Rp)&lt;/label&gt;&lt;input required type="number" value={formData.price} onChange={e =&gt; setFormData({...formData, price: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                  </span></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{/* PINDAHKAN INPUT FOTO KE SINI BRO! */}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-widest"&gt;Link Foto Produk (URL):&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>type="text"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>value={formData.image || ''}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>onChange={e =&gt; setFormData({...formData, image: e.target.value})}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>placeholder="https://link-gambar.com/foto.jpg"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>className="w-full px-4 py-2 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl focus:border-indigo-500 outline-none text-sm"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="pt-4 flex justify-end gap-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button type="button" onClick={() =&gt; setIsModalOpen(false)} className="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg"&gt;Batal&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" className="px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow-md"&gt;Simpan Data&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/form&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function AdminProducts({ products, setProducts, categories, syncToSheets }) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [isModalOpen, setIsModalOpen] = useState(false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [editItem, setEditItem] = useState(null);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [formData, setFormData] = useState({ id: '', name: '', price: '', category: '', stock: '' });</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const openModal = (item = null) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (item) { setEditItem(item); setFormData({ ...item }); }<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>else { setEditItem(null); setFormData({ id: `P${Math.floor(Math.random() * 10000)}`, name: '', price: '', category: categories[0]?.name || '', stock: '' }); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setIsModalOpen(true);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const deleteProduct = (id) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (window.Swal) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>window.Swal.fire({ title: 'Hapus Barang?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Ya, Hapus!' }).then((result) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (result.isConfirmed) {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>setProducts(products.filter(p =&gt; p.id !== id));</p>
+<p class="p1"><span class="Apple-converted-space">              </span>syncToSheets('DELETE_PRODUCT', { id });</p>
+<p class="p1"><span class="Apple-converted-space">              </span>window.Swal.fire('Terhapus!', 'Barang telah dihapus.', 'success');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const saveProduct = (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (e) e.preventDefault(); // Mencegah reload halaman</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// r[0]=ID, r[1]=Nama, r[2]=Harga, r[3]=Kategori, r[4]=Stok, r[5]=Foto</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const payload = {<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>...formData,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>price: parseInt(formData.price) || 0,<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>stock: parseInt(formData.stock) || 0,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>image: formData.image || '' // Mengambil link foto dari inputan baru</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (editItem) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>setProducts(products.map(p =&gt; p.id === editItem.id ? payload : p));</p>
+<p class="p1"><span class="Apple-converted-space">          </span>showAlert({ icon: 'success', title: 'Berhasil', text: 'Data barang diperbarui' });</p>
+<p class="p1"><span class="Apple-converted-space">          </span>syncToSheets('UPDATE_PRODUCT', payload);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>setProducts([...products, payload]);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>showAlert({ icon: 'success', title: 'Berhasil', text: 'Barang baru ditambahkan' });</p>
+<p class="p1"><span class="Apple-converted-space">          </span>syncToSheets('ADD_PRODUCT', payload);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setIsModalOpen(false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="bg-white rounded-2xl shadow-sm border border-gray-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="p-6 border-b border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3 className="font-bold text-lg text-gray-800"&gt;Daftar Barang&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button onClick={() =&gt; openModal()} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 font-medium transition-colors w-full md:w-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;Icon name="add" /&gt; Tambah Barang</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">          </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="overflow-x-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;table className="w-full text-left border-collapse min-w-[600px]"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th className="p-4 font-medium"&gt;Kode&lt;/th&gt;&lt;th className="p-4 font-medium"&gt;Nama Barang&lt;/th&gt;&lt;th className="p-4 font-medium"&gt;Kategori&lt;/th&gt;&lt;th className="p-4 font-medium"&gt;Harga&lt;/th&gt;&lt;th className="p-4 font-medium"&gt;Stok&lt;/th&gt;&lt;th className="p-4 font-medium text-center"&gt;Aksi&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{products.map(p =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;tr key={p.id} className="border-b border-gray-50 hover:bg-gray-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4 font-medium text-gray-600"&gt;{p.id}&lt;/td&gt;&lt;td className="p-4 text-gray-800 font-medium"&gt;{p.name}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4 text-gray-600"&gt;&lt;span className="bg-gray-100 px-2 py-1 rounded-md text-xs"&gt;{p.category}&lt;/span&gt;&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4 text-gray-800"&gt;{formatRp(p.price)}&lt;/td&gt;&lt;td className="p-4 text-gray-800"&gt;{p.stock}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4 flex items-center justify-center gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;button onClick={() =&gt; openModal(p)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"&gt;&lt;Icon name="edit" className="text-base" /&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;button onClick={() =&gt; deleteProduct(p.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"&gt;&lt;Icon name="delete" className="text-base" /&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>{isModalOpen &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;h3 className="font-bold text-lg"&gt;{editItem ? 'Edit Barang' : 'Tambah Barang Baru'}&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;button onClick={() =&gt; setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"&gt;&lt;Icon name="close" /&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;form onSubmit={saveProduct} className="p-6 space-y-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Nama Barang&lt;/label&gt;&lt;input required type="text" value={formData.name} onChange={e =&gt; setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="grid grid-cols-2 gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Kategori&lt;/label&gt;&lt;select required value={formData.category} onChange={e =&gt; setFormData({...formData, category: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white"&gt;{categories.map(c =&gt; &lt;option key={c.id} value={c.name}&gt;{c.name}&lt;/option&gt;)}&lt;/select&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Stok&lt;/label&gt;&lt;input required type="number" value={formData.stock} onChange={e =&gt; setFormData({...formData, stock: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Harga (Rp)&lt;/label&gt;&lt;input required type="number" value={formData.price} onChange={e =&gt; setFormData({...formData, price: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{/* TAMBAHKAN INPUT LINK FOTO DI SINI */}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="pt-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-widest"&gt;Link Foto Produk (URL):&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>type="text"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>value={formData.image || ''}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>onChange={e =&gt; setFormData({...formData, image: e.target.value})}<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>placeholder="https://link-gambar.com/foto.jpg"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>className="w-full px-4 py-2 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl focus:border-indigo-500 outline-none text-sm"<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p className="text-[9px] text-slate-400 mt-1"&gt;*Bisa ambil link dari internet atau upload di ImgBB/PostImages&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="pt-4 flex justify-end gap-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button type="button" onClick={() =&gt; setIsModalOpen(false)} className="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg"&gt;Batal&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" className="px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow-md"&gt;Simpan Data&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/form&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function AdminCategories({ categories, setCategories, syncToSheets }) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const addCategory = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (window.Swal) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>window.Swal.fire({ title: 'Tambah Kategori', input: 'text', inputPlaceholder: 'Nama kategori baru...', showCancelButton: true, confirmButtonText: 'Simpan', cancelButtonText: 'Batal' }).then((result) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (result.isConfirmed &amp;&amp; result.value) {</p>
+<p class="p1"><span class="Apple-converted-space">              </span>const newCat = { id: Date.now(), name: result.value };</p>
+<p class="p1"><span class="Apple-converted-space">              </span>setCategories([...categories, newCat]);</p>
+<p class="p1"><span class="Apple-converted-space">              </span>syncToSheets('ADD_CATEGORY', newCat);</p>
+<p class="p1"><span class="Apple-converted-space">              </span>window.Swal.fire('Berhasil!', 'Kategori ditambahkan.', 'success');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const deleteCategory = (id) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(window.confirm('Hapus kategori ini?')) { setCategories(categories.filter(c =&gt; c.id !== id)); syncToSheets('DELETE_CATEGORY', { id }); }</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="bg-white rounded-2xl shadow-sm border border-gray-100 max-w-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="p-6 border-b border-gray-100 flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3 className="font-bold text-lg text-gray-800"&gt;Manajemen Kategori&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button onClick={addCategory} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors"&gt;&lt;Icon name="add" /&gt; Tambah&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="p-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="grid grid-cols-1 md:grid-cols-2 gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>{categories.map(cat =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div key={cat.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-gray-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;span className="font-medium text-gray-800"&gt;{cat.name}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;button onClick={() =&gt; deleteCategory(cat.id)} className="text-red-500 hover:bg-red-100 p-1 rounded"&gt;&lt;Icon name="delete" className="text-base" /&gt;&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// MENU RIWAYAT TRANSAKSI (DENGAN FITUR EXPORT PDF)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function AdminHistory({ transactions, storeConfig }) {</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// LOGIKA UNTUK MENGHASILKAN PDF</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const handleDownloadPDF = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const { jsPDF } = window.jspdf;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const doc = new jsPDF('l', 'mm', 'a4'); // 'l' untuk Landscape supaya kolomnya lega</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Header Laporan</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.setFontSize(18);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.text(`Laporan Transaksi - ${storeConfig.name}`, 14, 20);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.setFontSize(11);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.setTextColor(100);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 28);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Garis Pemisah</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.setLineWidth(0.5);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.line(14, 32, 280, 32);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tableColumn = ["ID Transaksi", "Kasir", "Tanggal &amp; Waktu", "Metode", "Item", "Total"];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tableRows = [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>transactions.forEach(trx =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Gabungkan item jadi teks</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const itemStr = trx.items.map(i =&gt; `${i.qty}x ${i.name}`).join(', ');</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Gabungkan Metode + Ref jika ada</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const metodeStr = trx.refNumber<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>? `${trx.method}\n(Ref: ${trx.refNumber})`<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>: trx.method || 'Cash';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const transactionData = [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>trx.id,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>trx.cashierId || '-',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>new Date(trx.date).toLocaleString('id-ID'),</p>
+<p class="p1"><span class="Apple-converted-space">            </span>metodeStr, // KOLOM BARU</p>
+<p class="p1"><span class="Apple-converted-space">            </span>itemStr,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>formatRp(trx.total)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>];</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tableRows.push(transactionData);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Render Tabel menggunakan autoTable</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.autoTable({</p>
+<p class="p1"><span class="Apple-converted-space">            </span>head: [tableColumn],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>body: tableRows,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>startY: 38,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>theme: 'grid',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>headStyles: { fillColor: [79, 70, 229], halign: 'center' }, // Warna Indigo (Indigo-600)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>styles: { fontSize: 9, cellPadding: 3 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>columnStyles: {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>0: { cellWidth: 30 }, // ID</p>
+<p class="p1"><span class="Apple-converted-space">            </span>1: { cellWidth: 25 }, // Kasir</p>
+<p class="p1"><span class="Apple-converted-space">            </span>2: { cellWidth: 40 }, // Tanggal</p>
+<p class="p1"><span class="Apple-converted-space">            </span>3: { cellWidth: 35 }, // Metode (Agak lebar buat Ref)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>4: { cellWidth: 'auto' }, // Item (Fleksibel)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>5: { cellWidth: 35, halign: 'right' } // Total</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>didParseCell: function(data) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Bikin teks total jadi tebal</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (data.column.index === 5 &amp;&amp; data.section === 'body') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>data.cell.styles.fontStyle = 'bold';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// Footer di bawah tabel</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const finalY = doc.lastAutoTable.finalY || 40;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const grandTotal = transactions.reduce((sum, t) =&gt; sum + t.total, 0);</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.setFontSize(12);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.setFont(undefined, 'bold');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.text(`GRAND TOTAL: ${formatRp(grandTotal)}`, 280, finalY + 10, { align: 'right' });</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>doc.save(`Laporan_Toko_Lek_Heru_${Date.now()}.pdf`);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="bg-white rounded-2xl shadow-sm border border-gray-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="p-6 border-b border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3 className="font-bold text-lg text-gray-800 flex items-center gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;Icon name="history" className="text-indigo-600"/&gt; Riwayat Lengkap &amp; Rekap</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button onClick={handleDownloadPDF} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 font-medium transition-colors shadow-sm"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;Icon name="picture_as_pdf" /&gt; Download PDF</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="overflow-x-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;table className="w-full text-left border-collapse min-w-[800px]"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th className="p-4 font-medium"&gt;ID Transaksi&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th className="p-4 font-medium"&gt;Kasir&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th className="p-4 font-medium"&gt;Tanggal &amp; Waktu&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th className="p-4 font-medium"&gt;Metode&lt;/th&gt; {/* KOLOM BARU */}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th className="p-4 font-medium"&gt;Rincian Item&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;th className="p-4 font-medium text-right"&gt;Total&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{transactions.map((trx) =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;tr key={trx.id} className="border-b border-gray-50 hover:bg-gray-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4 font-bold text-gray-700"&gt;{trx.id}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4 font-medium text-indigo-600"&gt;{trx.cashierId || '-'}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4 text-gray-600 text-xs"&gt;{new Date(trx.date).toLocaleString('id-ID')}&lt;/td&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{/* ISI KOLOM METODE PEMBAYARAN */}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase ${</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>trx.method === 'Cash' ? 'bg-green-100 text-green-700' :<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>trx.method === 'MESIN EDC' ? 'bg-blue-100 text-blue-700' :<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>'bg-purple-100 text-purple-700'</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>}`}&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{trx.method || 'Cash'}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{trx.refNumber &amp;&amp; &lt;div className="text-[9px] text-gray-400 mt-1"&gt;Ref: {trx.refNumber}&lt;/div&gt;}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="flex flex-wrap gap-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{trx.items.map((item, i) =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>&lt;span key={i} className="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>{item.qty}x {item.name}</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td className="p-4 font-bold text-green-600 text-right"&gt;{formatRp(trx.total)}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{transactions.length === 0 &amp;&amp; &lt;tr&gt;&lt;td colSpan="6" className="p-12 text-center text-gray-400"&gt;Belum ada riwayat transaksi.&lt;/td&gt;&lt;/tr&gt;}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function AdminSettings({ storeConfig, setStoreConfig, syncToSheets }) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const [formData, setFormData] = useState(storeConfig);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const handleSubmit = (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>setStoreConfig(formData);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>syncToSheets('UPDATE_SETTINGS', formData);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>showAlert({ icon: 'success', title: 'Tersimpan', text: 'Pengaturan toko berhasil diperbarui.' });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="bg-white rounded-2xl shadow-sm border border-gray-100 max-w-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="p-6 border-b border-gray-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h3 className="font-bold text-lg text-gray-800 flex items-center gap-2"&gt;&lt;Icon name="settings" className="text-indigo-600"/&gt; Pengaturan Sistem / Struk&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;form onSubmit={handleSubmit} className="p-6 space-y-5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Nama Toko / Bisnis&lt;/label&gt;&lt;input required type="text" value={formData.name} onChange={e =&gt; setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Alamat Lengkap&lt;/label&gt;&lt;textarea required rows="3" value={formData.address} onChange={e =&gt; setFormData({...formData, address: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Nomor Telepon&lt;/label&gt;&lt;input required type="text" value={formData.phone} onChange={e =&gt; setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;&lt;label className="block text-sm font-medium text-gray-700 mb-1"&gt;Pesan Penutup di Struk (Footer)&lt;/label&gt;&lt;input required type="text" value={formData.footer} onChange={e =&gt; setFormData({...formData, footer: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="pt-4 border-t border-gray-100"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button type="submit" className="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all"&gt;Simpan Konfigurasi&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/form&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Render App ke DOM</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const root = ReactDOM.createRoot(document.getElementById('root'));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>root.render(&lt;App /&gt;);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
