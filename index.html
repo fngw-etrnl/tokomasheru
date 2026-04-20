@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Toko Mas Heru</title>
   
   <!-- Tailwind CSS -->
@@ -28,15 +28,10 @@
 
       <style>
         body {
-          margin: 0;
-          padding: 0;
-          /* Gunakan padding-top agar teks gak ketutup jam, 
-             tapi pastikan background-color-nya sama dengan warna header lo */
           padding-top: env(safe-area-inset-top);
-          background-color: #4f46e5; /* GANTI sesuai warna header Toko Heru lo */
-          min-height: 100vh;
+          background-color: #4f46e5; /* Ini warna Indigo biar nyambung sama header */
+          margin: 0;
         }
-        
         /* Animasi Fade In untuk Modal/Keranjang */
         .animate-slide-up {
           animation: slideUp 0.3s ease-out;
@@ -60,23 +55,6 @@
         .h-screen {
           height: 100vh; 
           height: 100dvh; /* Dynamic viewport biar gak kepotong bar browser mobile */
-        }
-        /* Mencegah tarikan naik-turun di browser mobile */
-        /*html, body {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          height: 100%;
-          /*overflow: hidden; /* Biar body utama gak bisa scroll */
-          /*overscroll-behavior: none; /* Kunci biar gak ada efek membal/bounce */
-        }
-        /* Khusus buat LoginScreen biar tingginya pas 100% layar HP */
-        .login-container {
-          height: 100dvh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          touch-action: none; /* Matiin interaksi sentuh buat scroll di area ini */
         }
         /* .material-symbols-outlined { vertical-align: middle; font-size: inherit; } */
       </style>
@@ -322,36 +300,34 @@
 
       return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
-          <div className="login-container fixed inset-0 bg-indigo-600 p-4 z-[999]">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
-              <div className="text-center mb-8">
-                <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Icon name="storefront" className="text-indigo-600 text-3xl" />
-                </div>
-                <h1 className="text-2xl font-bold text-gray-800">Toko Mas Heru</h1>
-                <p className="text-gray-500 text-sm mt-1">Silakan masuk untuk melanjutkan</p>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+            <div className="text-center mb-8">
+              <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Icon name="storefront" className="text-indigo-600 text-3xl" />
               </div>
-  
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div className="flex gap-4">
-                  <button type="button" onClick={() => setRole('kasir')} className={`flex-1 py-3 rounded-xl font-medium transition-all ${role === 'kasir' ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Mode Kasir</button>
-                  <button type="button" onClick={() => setRole('admin')} className={`flex-1 py-3 rounded-xl font-medium transition-all ${role === 'admin' ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Mode Admin</button>
-                </div>
-  
-                {role === 'kasir' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Kode Kasir: <span className="text-xs text-gray-400 font-normal">(sesuai cabang)</span></label>
-                    <input type="text" value={cashierCode} onChange={(e) => setCashierCode(e.target.value)} placeholder="••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-center text-xl uppercase tracking-wider" required />
-                  </div>
-                )}
-  
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Kode PIN <span className="text-xs text-gray-400 font-normal">:</span></label>
-                  <input type="password" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-center text-2xl tracking-[0.5em]" required />
-                </div>
-                <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition-all active:scale-95">MASUK</button>
-              </form>
+              <h1 className="text-2xl font-bold text-gray-800">Toko Mas Heru</h1>
+              <p className="text-gray-500 text-sm mt-1">Silakan masuk untuk melanjutkan</p>
             </div>
+
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setRole('kasir')} className={`flex-1 py-3 rounded-xl font-medium transition-all ${role === 'kasir' ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Mode Kasir</button>
+                <button type="button" onClick={() => setRole('admin')} className={`flex-1 py-3 rounded-xl font-medium transition-all ${role === 'admin' ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Mode Admin</button>
+              </div>
+
+              {role === 'kasir' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Kode Kasir: <span className="text-xs text-gray-400 font-normal">(sesuai cabang)</span></label>
+                  <input type="text" value={cashierCode} onChange={(e) => setCashierCode(e.target.value)} placeholder="••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-center text-xl uppercase tracking-wider" required />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Kode PIN <span className="text-xs text-gray-400 font-normal">:</span></label>
+                <input type="password" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-center text-2xl tracking-[0.5em]" required />
+              </div>
+              <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition-all active:scale-95">MASUK</button>
+            </form>
           </div>
         </div>
       );
@@ -640,7 +616,7 @@
         <div className="flex h-screen overflow-hidden bg-gray-100 relative">
           <div className="flex-1 flex flex-col h-full overflow-hidden no-print">
             {/* Header Responsive */}
-            <header className="bg-white px-4 py-4 shadow-sm flex items-center justify-between z-10 sticky top-0">
+            <header className="bg-white px-4 py-3 shadow-sm flex items-center justify-between z-10 sticky top-0">
               <div className="flex flex-col shrink-0">
                 <h2 className="text-lg font-bold text-gray-800 leading-tight">Toko Mas Heru</h2>
                 <p className="text-[10px] text-gray-500">Kasir: {cashierId}</p>
