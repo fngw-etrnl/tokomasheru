@@ -5,53 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Toko Mas Heru</title>
   
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- React & ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel untuk kompilasi JSX di Browser -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Google Material Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <!-- jsPDF & jsPDF-AutoTable untuk Export PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-  <style>
-    .h-screen { height: 100dvh; }
-    .main-scroll-area { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-    .animate-slide-up { animation: slideUp 0.3s ease-out; }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    .hide-scrollbar::-webkit-scrollbar { display: none; }
-    @media print {
-      @page { size: 58mm auto; margin: 0; }
-      body { margin: 0; padding: 0; }
-      #root, .no-print { display: none !important; }
-      #print-invoice { display: block !important; width: 58mm; padding: 4mm; font-family: 'Courier New', monospace; font-size: 9pt; background: white; }
-    }
-  </style>
+      <style>
+        /* Animasi Fade In untuk Modal/Keranjang */
+        .animate-slide-up {
+          animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+        /* Sembunyikan horizontal scrollbar */
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        
+        @media print {
+          @page { size: 58mm auto; margin: 0; }
+          body { margin: 0; padding: 0; }
+          #root, .no-print { display: none !important; }
+          #print-invoice { display: block !important; width: 58mm; padding: 4mm; font-family: 'Courier New', monospace; font-size: 9pt; background: white; }
+        }
+
+        /* .material-symbols-outlined { vertical-align: middle; font-size: inherit; } */
+      </style>
+  
+      <meta name="mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+      <meta name="apple-mobile-web-app-title" content="Toko Mas Heru">
+
+      <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3081/3081648.png">
+      <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3081/3081648.png">
+
+      <meta name="theme-color" content="#4f46e5">
+
 </head>
 <body class="bg-slate-50">
   <div id="root"></div>
 
+  <!-- KODE REACT APP -->
   <script type="text/babel">
     const { useState, useEffect } = React;
 
+    // --- CONFIGURATION ---
     const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-Um422Lqpxfi1OzEz6v9ahpu_T12lfT5jKqG6miqJ3FFAqfpOwUzfrTFaVYAPypvi/exec";
 
-    const formatRp = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+    const formatRp = (number) => {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+    };
+    // Fungsi agar angka ada titiknya saat diketik (1000 -> 1.000)
+    const formatThousand = (val) => {
+        if (!val) return "";
+        const num = val.toString().replace(/[^0-9]/g, "");
+        return num ? parseInt(num).toLocaleString("id-ID") : "";
+    };
+    // --- KOMPONEN IKON ---
     const Icon = ({ name, className = "" }) => <span className={`material-symbols-outlined ${className}`}>{name}</span>;
     
     const showAlert = (options) => {
-      if (window.Swal) window.Swal.fire({ fontFamily: 'sans-serif', ...options });
-      else alert(options.title);
+      if (window.Swal) {
+        window.Swal.fire({ fontFamily: 'sans-serif', ...options });
+      } else {
+        alert(options.title + (options.text ? `\n${options.text}` : ''));
+      }
     };
 
+    // FUNGSI CARI ADMIN FEE (Taruh di atas function App)
     const findAdminFee = (nominal, layanan, fees) => {
       if (!fees || fees.length === 0) return 0;
+      
       const match = fees.find(f => {
+        // Logika baru: Cek apakah nama layanan (misal: "Bayar Tagihan") 
+        // mengandung kata kategori dari Sheet (misal: "PNM")
         const categoryInSheet = f.category.toLowerCase();
         const serviceInApp = layanan.toLowerCase();
-        return serviceInApp.includes(categoryInSheet) && nominal >= f.min && nominal <= f.max;
+        
+        return serviceInApp.includes(categoryInSheet) && 
+               nominal >= f.min && 
+               nominal <= f.max;
       });
+      
       return match ? match.fee : 0;
     };
 
@@ -66,6 +120,26 @@
       const [storeConfig, setStoreConfig] = useState({ name: 'Toko Mas Heru', address: '', phone: '', footer: ''});
       const [adminFees, setAdminFees] = useState([]);
 
+      // Di dalam function App()
+      const handleLoginSuccess = (role, code) => {
+        setUserRole(role);
+        setCashierId(code);
+        
+        // SIMPAN KE MEMORI BROWSER
+        localStorage.setItem('tokoHeru_role', role);
+        localStorage.setItem('tokoHeru_cashier', code);
+      };
+
+      const syncToGoogleSheets = async (action, data) => {
+        try {
+          await fetch(APP_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action, data, timestamp: new Date().toISOString() })
+          });
+        } catch (error) { console.error("Sync Error:", error); }
+      };
+      
       useEffect(() => {
         const savedRole = localStorage.getItem('tokoHeru_role');
         const savedCashier = localStorage.getItem('tokoHeru_cashier');
@@ -87,54 +161,45 @@
               setTransactions(result.data.transactions || []);
               if (result.data.balances) setBalances(result.data.balances);
               if (result.data.storeConfig) setStoreConfig(result.data.storeConfig);
-              if (result.data.adminFees) setAdminFees(result.data.adminFees);
+            }
+            if (result.data.adminFees) {
+              setAdminFees(result.data.adminFees);
             }
           } catch (e) { console.error("Load Error", e); }
           finally { setLoading(false); }
         };
         loadData();
       }, []);
-
-      const handleLoginSuccess = (role, code) => {
-        setUserRole(role);
-        setCashierId(code);
-        localStorage.setItem('tokoHeru_role', role);
-        localStorage.setItem('tokoHeru_cashier', code);
-      };
-
+      
       const handleLogout = () => {
         setUserRole(null);
         setCashierId('');
+        
+        // HAPUS DARI MEMORI BROWSER
         localStorage.removeItem('tokoHeru_role');
         localStorage.removeItem('tokoHeru_cashier');
       };
 
-      const syncToGoogleSheets = async (action, data) => {
-        try {
-          await fetch(APP_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action, data, timestamp: new Date().toISOString() })
-          });
-        } catch (error) { console.error("Sync Error:", error); }
-      };
-
-      if (loading) return <div className="h-screen flex items-center justify-center bg-indigo-600 text-white text-2xl font-bold italic">Bismillah...</div>;
-      
-      if (!userRole) return <LoginScreen onLogin={handleLoginSuccess} />;
-
+      if (loading) return <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-2xl font-bold">"Bismillah.."</div>;
+      if (!userRole) {
+        return <LoginScreen onLogin={handleLoginSuccess} />;
+      }
       return (
         <div className="min-h-screen bg-slate-50">
           {userRole === 'kasir' ? (
             <KasirDashboard 
-              products={products} categories={categories} storeConfig={storeConfig} 
-              cashierId={cashierId} transactions={transactions} adminFees={adminFees}
-              onLogout={handleLogout} 
+              products={products} 
+              categories={categories} 
+              storeConfig={storeConfig}
+              cashierId={cashierId} 
+              transactions={transactions}
+              adminFees={adminFees} // <--- PASTIKAN INI ADA BRO!
+              onLogout={handleLogout}
               onTransactionSuccess={(trx) => {
                 setTransactions(prev => [trx, ...prev]);
                 syncToGoogleSheets('ADD_TRANSACTION', trx);
                 setBalances(prev => {
-                  const nb = { ...prev };
+                  const nb = { ...prev }; // Kita pakai 'nb' supaya pendek dan tidak typo
                   if (trx.method === 'Cash') nb.kembalian += trx.total;
                   else if (trx.method === 'MESIN EDC') nb.bank += trx.total;
                   trx.items.forEach(i => {
@@ -143,7 +208,8 @@
                     else if (['Pulsa', 'Paket Data'].includes(i.category)) nb.pulsa -= sub;
                     else if (i.category === 'Transfer') nb.bank -= sub;
                   });
-                  syncToSheets('UPDATE_BALANCES', nb);
+                  
+                  syncToGoogleSheets('UPDATE_BALANCES', nb);
                   return nb;
                 });
               }}
@@ -153,14 +219,16 @@
               products={products} setProducts={setProducts} categories={categories} setCategories={setCategories}
               transactions={transactions} balances={balances} setBalances={setBalances}
               storeConfig={storeConfig} setStoreConfig={setStoreConfig}
-              onLogout={handleLogout} syncToSheets={syncToGoogleSheets}
+              onLogout={handleLogout}
+              syncToSheets={syncToGoogleSheets}
             />
           )}
         </div>
       );
     }
-
-    // --- LOGIN SCREEN ---
+    // ==========================================
+    // 1. LOGIN SCREEN
+    // ==========================================
     function LoginScreen({ onLogin }) {
       const [role, setRole] = useState('kasir');
       const [pin, setPin] = useState('');
@@ -168,165 +236,758 @@
 
       const handleLogin = async (e) => {
         e.preventDefault();
+        
+        // Validasi input kosong
         if (!pin.trim() || (role === 'kasir' && !cashierCode.trim())) {
-          showAlert({ icon: 'warning', title: 'Isi data lengkap!' });
+          showAlert({ icon: 'warning', title: 'Perhatian', text: 'Isi data dengan lengkap!' });
           return;
         }
+
         try {
-          showAlert({ title: 'Memverifikasi...', allowOutsideClick: false, didOpen: () => window.Swal.showLoading() });
+          showAlert({ 
+            title: 'Memverifikasi...', 
+            allowOutsideClick: false, 
+            didOpen: () => { window.Swal.showLoading(); } 
+          });
+
+          // Kita kirim "ADMIN" sebagai cashierCode kalau role-nya admin
           const loginData = {
             cashierCode: role === 'admin' ? 'ADMIN' : cashierCode.trim().toUpperCase(),
             pin: pin.trim()
           };
+
           const response = await fetch(APP_SCRIPT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({ action: 'CHECK_LOGIN', data: loginData })
+            body: JSON.stringify({ 
+              action: 'CHECK_LOGIN', 
+              data: loginData 
+            })
           });
+          
           const result = await response.json();
-          window.Swal.close();
-          if (result.valid) onLogin(role, loginData.cashierCode);
-          else showAlert({ icon: 'error', title: 'Login Gagal', text: result.message });
-        } catch (err) { showAlert({ icon: 'error', title: 'Error Koneksi' }); }
+
+          if (result && result.valid) {
+            window.Swal.close();
+            // Login sukses!
+            if (role === 'admin') {
+              onLogin('admin', 'ADMIN');
+            } else {
+              onLogin('kasir', loginData.cashierCode);
+            }
+          } else {
+            showAlert({ 
+              icon: 'error', 
+              title: 'Login Gagal', 
+              text: result.message || 'PIN atau Kode Salah!' 
+            });
+          }
+        } catch (err) {
+          console.error("Login Error:", err);
+          showAlert({ icon: 'error', title: 'Error', text: 'Koneksi database bermasalah.' });
+        }
       };
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-indigo-600 p-4">
-          <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-8">
-            <h1 className="text-2xl font-bold text-center mb-6">Toko Mas Heru</h1>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="flex gap-2">
-                <button type="button" onClick={() => setRole('kasir')} className={`flex-1 py-2 rounded-xl ${role === 'kasir' ? 'bg-indigo-600 text-white' : 'bg-gray-100'}`}>Kasir</button>
-                <button type="button" onClick={() => setRole('admin')} className={`flex-1 py-2 rounded-xl ${role === 'admin' ? 'bg-red-500 text-white' : 'bg-gray-100'}`}>Admin</button>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+            <div className="text-center mb-8">
+              <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Icon name="storefront" className="text-indigo-600 text-3xl" />
               </div>
-              {role === 'kasir' && <input type="text" placeholder="KODE KASIR" value={cashierCode} onChange={e => setCashierCode(e.target.value)} className="w-full p-3 border rounded-xl text-center font-bold" />}
-              <input type="password" placeholder="PIN" value={pin} onChange={e => setPin(e.target.value)} className="w-full p-3 border rounded-xl text-center text-2xl tracking-widest" />
-              <button type="submit" className="w-full bg-green-600 text-white py-3 rounded-xl font-bold">MASUK</button>
+              <h1 className="text-2xl font-bold text-gray-800">Toko Mas Heru</h1>
+              <p className="text-gray-500 text-sm mt-1">Silakan masuk untuk melanjutkan</p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setRole('kasir')} className={`flex-1 py-3 rounded-xl font-medium transition-all ${role === 'kasir' ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Mode Kasir</button>
+                <button type="button" onClick={() => setRole('admin')} className={`flex-1 py-3 rounded-xl font-medium transition-all ${role === 'admin' ? 'bg-red-500 text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Mode Admin</button>
+              </div>
+
+              {role === 'kasir' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Kode Kasir: <span className="text-xs text-gray-400 font-normal">(sesuai cabang)</span></label>
+                  <input type="text" value={cashierCode} onChange={(e) => setCashierCode(e.target.value)} placeholder="••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-center text-xl uppercase tracking-wider" required />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Kode PIN <span className="text-xs text-gray-400 font-normal">:</span></label>
+                <input type="password" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-center text-2xl tracking-[0.5em]" required />
+              </div>
+              <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-green-200 transition-all active:scale-95">MASUK</button>
             </form>
           </div>
         </div>
       );
     }
 
-    // --- KASIR DASHBOARD ---
+    // ==========================================
+    // 2. KASIR DASHBOARD (POS)
+    // ==========================================
     function KasirDashboard({ products, categories, storeConfig, cashierId, transactions, adminFees, onLogout, onTransactionSuccess }) {
+      const [refNumber, setRefNumber] = useState('');
       const [cart, setCart] = useState([]);
-      const [activeCategory, setActiveCategory] = useState('Semua');
-      const [searchQuery, setSearchQuery] = useState('');
-      const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
       const [showPayment, setShowPayment] = useState(false);
-      const [paymentAmount, setPaymentAmount] = useState('');
       const [paymentMethod, setPaymentMethod] = useState('Cash');
+      const [searchQuery, setSearchQuery] = useState('');
+      const [paymentAmount, setPaymentAmount] = useState('');
+      const [activeCategory, setActiveCategory] = useState('Semua');
       const [lastInvoice, setLastInvoice] = useState(null);
+      const [showHistory, setShowHistory] = useState(false);
+      const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
+      // const [adminFees, setAdminFees] = useState([]);
+      const [walletName, setWalletName] = useState(''); // Tambahkan ini
+      const quickActions = [
+        { id: 'qa1', name: 'Transfer Bank', icon: 'account_balance', color: 'bg-blue-500', options: ['BNI', 'BRI', 'ANTAR BANK', 'KARTU ATM'] },
+        { id: 'QA2', name: 'Tarik Tunai', icon: 'payments', color: 'bg-emerald-500'},
+        { id: 'qa2', name: 'Top Up E-Wallet', icon: 'account_balance_wallet', color: 'bg-purple-500', options: ['GOPAY', 'DANA', 'OVO', 'SHOPEEPAY', 'LINKAJA'] },
+        { id: 'qa3', name: 'Bayar Tagihan', icon: 'receipt_long', color: 'bg-orange-500', options: ['ADIRA', 'BPJS', 'ACC FINANCE', 'PNM', 'BFI', 'HOME CREDIT', 'LAINNYA'] }
+      ];
 
-      const filteredProducts = products.filter(p => (activeCategory === 'Semua' || p.category === activeCategory) && p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-      const totalBelanja = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      const handleQuickAction = (action) => {
+        let options = {};
+        if (action.name === 'Transfer Bank') {
+          options = { 'BNI': 'BNI', 'BRI': 'BRI', 'ANTAR BANK': 'ANTAR BANK', 'KARTU ATM': 'KARTU ATM' };
+        } else if (action.name === 'Top Up E-Wallet') {
+          options = { 'GOPAY': 'GOPAY', 'DANA': 'DANA', 'OVO': 'OVO', 'SHOPEEPAY': 'SHOPEEPAY', 'LINKAJA': 'LINKAJA' };
+        } else if (action.name === 'Bayar Tagihan') {
+          options = { 'ADIRA': 'ADIRA', 'BPJS': 'BPJS', 'PNM': 'PNM', 'HOME CREDIT': 'HOME CREDIT', 'LAINNYA': 'LAINNYA' };
+        } else if (action.name === 'Tarik Tunai') {
+          options = { 'BNI': 'BNI', 'BRI': 'BRI', 'KARTU ATM': 'KARTU ATM' };
+        }
 
+        window.Swal.fire({
+          title: `Layanan ${action.name}`,
+          html: `
+            <div class="text-left space-y-4">
+              ${Object.keys(options).length > 0 ? `
+                <div>
+                  <label class="block text-[8px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Pilih Sumber:</label>
+                  <select id="swal-vendor" class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 font-bold">
+                    ${Object.entries(options).map(([val, label]) => `<option value="${val}">${label}</option>`).join('')}
+                  </select>
+                </div>
+              ` : ''}
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Nominal ${action.name}:</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-xl">Rp</span>
+                  <input id="swal-nominal" class="w-full p-5 text-3xl font-black border-2 border-slate-100 rounded-3xl text-right focus:border-indigo-500 outline-none" placeholder="0">
+                </div>
+              </div>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: 'Tambah',
+          didOpen: () => {
+            const nom = document.getElementById('swal-nominal');
+            nom.focus();
+            nom.oninput = (e) => {
+              let val = e.target.value.replace(/\D/g, '');
+              e.target.value = val ? parseInt(val).toLocaleString('id-ID') : '';
+            };
+          },
+          preConfirm: () => {
+            const nominal = parseInt(document.getElementById('swal-nominal').value.replace(/\D/g, ''));
+            const vendor = document.getElementById('swal-vendor').value;
+            
+            if (!nominal) return window.Swal.showValidationMessage('Isi nominal!');
+
+            // Kuncinya di sini Bro:
+            // Kalau layanannya "Transfer Bank", kita cari "TRF [Vendor]"
+            // Kalau layanannya "Tarik Tunai", kita cari "TARIK [Vendor]"
+            let keyword = "";
+            if (action.name === 'Transfer Bank') keyword = `TRF ${vendor}`;
+            else if (action.name === 'Tarik Tunai') keyword = `TARIK ${vendor}`;
+            else keyword = vendor; // Untuk BPJS, PNM, dll tetap normal
+
+            const fee = findAdminFee(nominal, keyword, adminFees);
+            return { nominal, vendor, fee, keyword };
+          }
+        }).then(res => {
+          if (res.isConfirmed) {
+            const { nominal, vendor, fee } = res.value;
+            const newItem = {
+              id: `QA-${Date.now()}`,
+              name: vendor ? `${action.name} (${vendor})` : action.name,
+              price: nominal + fee, 
+              category: action.name,
+              qty: 1,
+              note: `Nominal: ${nominal}, Admin: ${fee}`
+            };
+            setCart(prev => [...prev, newItem]);
+          }
+        });
+      };
+
+      const formatRp = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+
+      const filteredProducts = products.filter(p => {
+        const matchCat = activeCategory === 'Semua' || p.category === activeCategory;
+        const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchCat && matchSearch;
+      });
+
+      const updateQty = (id, delta) => {
+        setCart(prevCart => {
+          return prevCart.map(item => {
+            if (item.id === id) {
+              // Jika ini produk custom (ID mengandung timestamp/strip), jangan izinkan tambah Qty
+              // Lebih baik input ulang saja nominalnya agar tercatat sebagai transaksi terpisah
+              if (item.id.includes('-')) {
+                if (delta > 0) {
+                  showAlert({ icon: 'info', title: 'Info', text: 'Untuk nominal custom, silakan tambah item baru dari menu.' });
+                  return item;
+                }
+              }
+              
+              const newQty = Math.max(1, item.qty + delta);
+              return { ...item, qty: newQty };
+            }
+          return item;
+          });
+        });
+      };
+
+      // --- FUNGSI KERANJANG ---
       const addToCart = (p) => {
-        setCart(prev => {
-          const exist = prev.find(item => item.id === p.id);
-          if (exist) return prev.map(item => item.id === p.id ? { ...item, qty: item.qty + 1 } : item);
-          return [...prev, { ...p, qty: 1 }];
+          if (p.price === 0) {
+            window.Swal.fire({
+                title: `Input Nominal ${p.name}`,
+                html: `
+                    <div class="mt-4 text-left">
+                        <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest">Jumlah (Rupiah):</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-xl">Rp</span>
+                            <input id="swal-input-nominal" class="w-full p-5 text-3xl font-black border-2 border-slate-100 rounded-3xl text-right focus:border-indigo-500 outline-none" placeholder="0">
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Tambah',
+                confirmButtonColor: '#4f46e5',
+                didOpen: () => {
+                    const input = document.getElementById('swal-input-nominal');
+                    input.focus();
+                    input.addEventListener('input', (e) => {
+                        let raw = e.target.value.replace(/[^0-9]/g, '');
+                        e.target.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
+                    });
+                },
+                preConfirm: () => {
+                  const inputVal = document.getElementById('swal-input-nominal').value;
+                  const nominal = parseInt(inputVal.replace(/\D/g, ''));
+                  
+                  if (!nominal || nominal <= 0) return window.Swal.showValidationMessage('Isi nominal!');
+                  
+                  // PERBAIKAN: Cari fee berdasarkan nama produk (p.name)
+                  const fee = findAdminFee(nominal, p.name, adminFees); 
+                  
+                  return { nominal, fee }; // Balikin cuma nominal & fee
+                }
+              }).then(res => {
+                if (res.isConfirmed) {
+                  const { nominal, fee } = res.value;
+                  const newItem = {
+                    id: `PROD-${Date.now()}`,
+                    name: `${p.name}`,
+                    price: nominal + fee, // Otomatis nambahin fee ke harga
+                    category: p.category,
+                    qty: 1,
+                    note: `Nominal: ${nominal}, Admin: ${fee}`
+                  };
+                  setCart(prev => [...prev, newItem]);
+                }
+              });
+              return; // Supaya gak lanjut ke logika produk biasa di bawah
+          }
+        // LOGIKA UNTUK PRODUK BIASA (DENGAN CEK STOK)
+        setCart(prevCart => {
+          const existingItem = prevCart.find(item => item.id === p.id);
+            if (existingItem) {
+              // Cek stok jika ada batasnya
+              if (p.stock !== undefined && existingItem.qty >= p.stock) {
+                showAlert({ icon: 'error', title: 'Stok Habis', text: 'Barang tidak mencukupi!' });
+                return prevCart;
+              }
+              return prevCart.map(item =>
+                item.id === p.id ? { ...item, qty: item.qty + 1 } : item
+              );
+            }
+          return [...prevCart, { ...p, qty: 1 }];
+        });
+      };
+
+      const removeFromCart = (id) => setCart(prev => prev.filter(item => item.id !== id));
+      
+      const totalBelanja = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      const handleCheckout = () => {
+        if (cart.length === 0) return;
+        setShowPayment(true);
+        setPaymentAmount('');
+      };
+
+      const shareToWhatsApp = () => {
+        if (!lastInvoice) return;
+        
+        const itemDetail = lastInvoice.items.map(i => `* ${i.name} (x${i.qty}) - ${formatRp(i.price * i.qty)}`).join('%0A');
+        const text = `*${storeConfig.name}*%0A` +
+                     `ID: ${lastInvoice.id}%0A` +
+                     `Tanggal: ${new Date(lastInvoice.date).toLocaleString('id-ID')}%0A` +
+                     `--------------------------%0A` +
+                     
+                     `${itemDetail}%0A` +
+                     
+                     `--------------------------%0A` +
+                     `*TOTAL: ${formatRp(lastInvoice.total)}*%0A` +
+                     `Bayar: ${formatRp(lastInvoice.payment)}%0A` +
+                     `Kembali: ${formatRp(lastInvoice.change)}%0A%0A` +
+                     `${storeConfig.footer}`;
+
+        window.open(`https://wa.me/?text=${text}`, '_blank');
+      };
+
+      const downloadStrukImage = () => {
+        const element = document.getElementById('print-invoice');
+        element.classList.remove('hidden'); // Munculkan sebentar buat difoto
+        html2canvas(element).then(canvas => {
+          const link = document.createElement('a');
+          link.download = `Struk-${lastInvoice.id}.png`;
+          link.href = canvas.toDataURL();
+          link.click();
+          element.classList.add('hidden'); // Sembunyikan lagi
         });
       };
 
       const processPayment = () => {
-        const bayar = parseInt(paymentAmount) || 0;
-        if (bayar < totalBelanja) return showAlert({ icon: 'error', title: 'Uang Kurang' });
-        
-        const trx = {
-          id: `INV-${Date.now().toString().slice(-6)}`,
-          date: new Date().toISOString(),
-          cashierId, items: cart, total: totalBelanja, payment: bayar, change: bayar - totalBelanja, method: paymentMethod
+        const bayar = parseInt(paymentAmount.replace(/\D/g, '')) || 0;
+        if (bayar < totalBelanja) {
+          showAlert({ icon: 'error', title: 'Uang Kurang' });
+          return;
+        }
+        const safeWalletName = typeof walletName !== 'undefined' ? walletName : '';
+        const finalMethod = paymentMethod === 'E-Wallet' ? `E-Wallet (${safeWalletName || 'Digital'})` : paymentMethod;
+        const transactionData = { 
+          id: `INV-${Date.now().toString().slice(-6)}`, 
+          date: new Date().toISOString(), 
+          cashierId: cashierId, 
+          items: cart, 
+          total: totalBelanja, 
+          payment: bayar, 
+          change: bayar - totalBelanja,
+          method: finalMethod, 
+          refNumber: refNumber 
         };
-        setLastInvoice(trx);
-        onTransactionSuccess(trx);
+        if (typeof setWalletName === 'function') setWalletName(''); // Reset nama wallet setelah sukses
+        setLastInvoice(transactionData);
+        onTransactionSuccess(transactionData);
+
+        // Bersihkan keranjang dan tutup modal bayar
         setCart([]);
         setShowPayment(false);
+        setRefNumber('');
+        if (typeof setWalletName === 'function') setWalletName('');
+        setIsMobileCartOpen(false);
+
+        // Tampilkan notifikasi sukses tanpa auto-print
+        showAlert({
+          icon: 'success',
+          title: 'Transaksi Berhasil!',
+          text: 'Struk digital telah siap.',
+          timer: 1500,
+          showConfirmButton: false
+        });
       };
 
       return (
-        <div className="flex h-screen overflow-hidden flex-col md:flex-row">
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <header className="bg-white p-4 shadow-sm flex justify-between items-center">
-              <h2 className="font-bold">Toko Mas Heru <span className="text-xs text-gray-400">({cashierId})</span></h2>
-              <div className="flex gap-2">
-                <input type="text" placeholder="Cari..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="border rounded-full px-4 py-1 text-sm outline-none focus:border-indigo-500" />
-                <button onClick={onLogout} className="text-red-500"><Icon name="logout" /></button>
+        <div className="flex h-screen overflow-hidden bg-gray-100 relative">
+          <div className="flex-1 flex flex-col h-full overflow-hidden no-print">
+            {/* Header Responsive */}
+            <header className="bg-white px-4 py-3 shadow-sm flex items-center justify-between z-10 sticky top-0">
+              <div className="flex flex-col shrink-0">
+                <h2 className="text-lg font-bold text-gray-800 leading-tight">Toko Mas Heru</h2>
+                <p className="text-[10px] text-gray-500">Kasir: {cashierId}</p>
+              </div>
+              
+              <div className="flex items-center gap-2 flex-1 justify-end ml-2">
+                {/* Angka 3: Search Area Diperkecil */}
+                <div className="relative flex-1 max-w-[120px] md:max-w-xs">
+                  <input 
+                    type="text" 
+                    placeholder="Cari..." 
+                    value={searchQuery} 
+                    onChange={(e) => setSearchQuery(e.target.value)} 
+                    className="w-full pl-8 pr-3 py-1.5 border rounded-full bg-gray-50 text-sm outline-none focus:border-indigo-400" 
+                  />
+                  <Icon name="search" className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+                </div>
+
+                {/* Angka 2: Riwayat */}
+                  <button onClick={() => setShowHistory(!showHistory)} className="flex items-center gap-2 px-3 py-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                      <Icon name="history" className="text-lg" /> <span className="hidden md:inline">Riwayat</span>
+                    </button>
+                  {showHistory && (
+                    <div className="absolute right-0 top-full mt-3 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                      <div className="p-3 border-b border-gray-100 bg-gray-50 font-bold text-gray-700 flex justify-between items-center">
+                        <span>Riwayat Terakhir</span>
+                        <button onClick={() => setShowHistory(false)} className="text-gray-400 hover:text-gray-600"><Icon name="close" className="text-base" /></button>
+                      </div>
+                      <div className="max-h-64 overflow-y-auto">
+                        {transactions.length === 0 ? (
+                           <div className="p-4 text-center text-gray-500 text-sm">Belum ada transaksi</div>
+                        ) : (
+                           transactions.slice(0, 10).map(trx => (
+                             <div key={trx.id} className="p-3 border-b border-gray-50 hover:bg-gray-50 text-sm">
+                               <div className="flex justify-between items-start mb-1">
+                                 <span className="font-bold text-gray-800">{trx.id}</span>
+                                 <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{trx.cashierId || '-'}</span>
+                               </div>
+                               <div className="text-xs text-gray-500 mb-1">{new Date(trx.date).toLocaleString('id-ID')}</div>
+                               <div className="text-indigo-600 font-bold">{formatRp(trx.total)}</div>
+                             </div>
+                           ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                {/* Angka 1: Logout */}
+                <button onClick={onLogout} className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors">
+                  <Icon name="logout" className="text-xl" />
+                </button>
               </div>
             </header>
-            
-            <div className="p-4 flex gap-2 overflow-x-auto hide-scrollbar">
-              <button onClick={() => setActiveCategory('Semua')} className={`px-4 py-1 rounded-full whitespace-nowrap ${activeCategory === 'Semua' ? 'bg-indigo-600 text-white' : 'bg-white border'}`}>Semua</button>
-              {categories.map(c => <button key={c.id} onClick={() => setActiveCategory(c.name)} className={`px-4 py-1 rounded-full whitespace-nowrap ${activeCategory === c.name ? 'bg-indigo-600 text-white' : 'bg-white border'}`}>{c.name}</button>)}
+
+            {/* Banner Kasir */}
+            <div className="px-4 md:px-6 pt-4 shrink-0 no-print">
+              <div className="w-full h-28 bg-indigo-100 rounded-2xl overflow-hidden relative shadow-sm">
+                 <img src="https://media.istockphoto.com/id/1163012737/id/foto/pelanggan-cantik-yang-ramah-di-kasir-tersenyum-di-kasir-pria-sementara-dia-memindai-produk-di.jpg?s=612x612&w=0&k=20&c=Pgsa-wtrHygwzVpakS5-E6tCAJuC7uvW6_n2np9Fy08=" alt="Promo Banner" className="w-full h-full object-cover opacity-80" />
+                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/90 to-transparent flex items-center p-6">
+                   <div className="text-white">
+                     <h3 className="text-xl font-bold mb-1">Selamat Datang, Kasir {cashierId || 'Pagi'}!</h3>
+                     <p className="text-sm opacity-90">Tetap semangat melayani pelanggan hari ini.</p>
+                   </div>
+                 </div>
+              </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {filteredProducts.map(p => (
-                <div key={p.id} onClick={() => addToCart(p)} className="bg-white p-3 rounded-2xl border hover:border-indigo-500 cursor-pointer transition-all">
-                  <div className="h-24 bg-gray-50 rounded-xl mb-2 flex items-center justify-center overflow-hidden">
-                    {p.image ? <img src={p.image} className="w-full h-full object-cover" /> : <Icon name="inventory_2" className="text-gray-200 text-3xl" />}
-                  </div>
-                  <h4 className="text-sm font-bold truncate uppercase">{p.name}</h4>
-                  <p className="text-indigo-600 font-bold">{formatRp(p.price)}</p>
-                </div>
+            {/* Menu Kategori */}
+            <div className="px-4 md:px-6 py-4 flex gap-3 overflow-x-auto hide-scrollbar">
+              <button onClick={() => setActiveCategory('Semua')} className={`px-5 py-2 rounded-full font-medium whitespace-nowrap transition-all ${activeCategory === 'Semua' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>Favorit</button>
+              {categories.map(cat => (
+                <button key={cat.id} onClick={() => setActiveCategory(cat.name)} className={`px-5 py-2 rounded-full font-medium whitespace-nowrap transition-all ${activeCategory === cat.name ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>{cat.name}</button>
               ))}
             </div>
-          </div>
 
-          {/* KERANJANG DESKTOP */}
-          <div className="hidden md:flex w-80 bg-white border-l flex-col">
-            <div className="p-4 border-b font-bold flex items-center gap-2"><Icon name="shopping_cart" /> Keranjang</div>
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {cart.map(item => (
-                <div key={item.id} className="flex justify-between items-center text-sm">
-                  <div className="flex-1 truncate pr-2"><div>{item.name}</div><div className="text-xs text-gray-400">{formatRp(item.price)}</div></div>
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => setCart(cart.map(i => i.id === item.id ? {...i, qty: Math.max(1, i.qty-1)} : i))} className="w-6 h-6 border rounded">-</button>
-                    <span>{item.qty}</span>
-                    <button onClick={() => setCart(cart.map(i => i.id === item.id ? {...i, qty: i.qty+1} : i))} className="w-6 h-6 border rounded">+</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="p-4 bg-gray-50 border-t">
-              <div className="flex justify-between font-bold mb-4"><span>Total</span><span>{formatRp(totalBelanja)}</span></div>
-              <button onClick={() => setShowPayment(true)} disabled={cart.length === 0} className="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold disabled:bg-gray-300">BAYAR</button>
-            </div>
-          </div>
-
-          {/* MODAL PEMBAYARAN */}
-          {showPayment && (
-            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-              <div className="bg-white p-6 rounded-3xl w-full max-w-sm">
-                <h3 className="text-center font-bold text-gray-400 mb-2">Total Tagihan</h3>
-                <div className="text-3xl font-black text-center text-indigo-600 mb-6">{formatRp(totalBelanja)}</div>
-                <input type="number" placeholder="Uang Diterima" value={paymentAmount} onChange={e => setPaymentAmount(e.target.value)} className="w-full p-4 border-2 rounded-2xl text-2xl text-center mb-4" autoFocus />
-                <div className="flex gap-2">
-                  <button onClick={() => setShowPayment(false)} className="flex-1 py-3 bg-gray-100 rounded-xl">Batal</button>
-                  <button onClick={processPayment} className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold">Proses</button>
+            {/* SEKSI AKSI CEPAT */}
+            <div className="px-4 md:px-6 mb-6">
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 backdrop-blur-md rounded-[2rem] p-6 shadow-md">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {quickActions.map((action) => (
+                    <button
+                      key={action.id}
+                      onClick={() => handleQuickAction({ ...action, price: 0, category: action.name.split(' ')[1] || 'Layanan' })}
+                      className="group flex flex-col items-center justify-center p-4 bg-white rounded-2xl border-2 indigo-500 hover:border-amber-500 hover:bg-grey-500/50 hover:shadow-xl transition-all active:scale-95"
+                    >
+                      <div className={`${action.color} text-white p-3 rounded-2xl mb-2 shadow-lg shadow-gray-200 group-hover:scale-110 transition-transform`}>
+                        <Icon name={action.icon} className="text-2xl" />
+                      </div>
+                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-tight text-center">{action.name}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
-          )}
 
-          {/* STRUK DIGITAL */}
-          {lastInvoice && (
-            <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
-              <div className="bg-white p-6 rounded-3xl w-full max-w-sm">
-                <div id="print-invoice" className="font-mono text-xs p-4 border mb-4 bg-white text-black">
-                  <center className="mb-2"><strong>{storeConfig.name}</strong><br/>{storeConfig.address}</center>
-                  <div className="border-b border-dashed my-2"></div>
-                  {lastInvoice.items.map(i => <div key={i.id} className="flex justify-between"><span>{i.name} x{i.qty}</span><span>{formatRp(i.price*i.qty)}</span></div>)}
-                  <div className="border-b border-dashed my-2"></div>
-                  <div className="flex justify-between font-bold"><span>TOTAL</span><span>{formatRp(lastInvoice.total)}</span></div>
-                  <div className="flex justify-between"><span>BAYAR</span><span>{formatRp(lastInvoice.payment)}</span></div>
-                  <div className="flex justify-between"><span>KEMBALI</span><span>{formatRp(lastInvoice.change)}</span></div>
-                  <center className="mt-4">{storeConfig.footer}</center>
+            {/* Tambahkan padding bottom ekstra (pb-24) di HP agar tidak tertutup tombol melayang */}
+            <div className="flex-1 overflow-y-auto px-4 md:px-6 pb-24 md:pb-6">
+              {/* DAFTAR PRODUK - Ukuran diperkecil */}
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 pb-24">
+                    {filteredProducts.map(product => (
+                        <div 
+                            key={product.id} 
+                            onClick={() => addToCart(product)} 
+                            className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 hover:border-indigo-400 cursor-pointer transition-all active:scale-95 flex flex-col h-full"
+                        >
+                            {/* Box Ikon/Gambar diperkecil h-20 */}
+                            <div className="h-20 bg-slate-50 rounded-xl mb-2 flex items-center justify-center overflow-hidden">
+                                {product.image ? (
+                                    <img 
+                                        src={product.image} 
+                                        alt={product.name} 
+                                        className="w-full h-full object-cover shadow-inner"
+                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=No+Image'; }} // Jika link mati
+                                    />
+                                ) : (
+                                    <Icon name="inventory_2" className="text-slate-200 text-2xl" />
+                                )}
+                            </div>
+                            
+                            {/* Teks diperkecil pakai text-[11px] */}
+                            <h4 className="font-bold text-[11px] uppercase text-slate-700 line-clamp-1 mb-1">
+                                {product.name}
+                            </h4>
+                            
+                            <div className="flex justify-between items-end mt-auto">
+                                <p className="text-indigo-600 font-black text-xs">
+                                    {product.price === 0 ? "Nominal" : formatRp(product.price)}
+                                </p>
+                                <span className="text-[9px] text-slate-300 font-bold">
+                                    Stok: {product.stock}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                   <button onClick={() => window.print()} className="bg-indigo-600 text-white py-2 rounded-xl">Cetak</button>
-                   <button onClick={() => setLastInvoice(null)} className="bg-gray-100 py-2 rounded-xl">Tutup</button>
+            </div>
+          </div>
+
+            {/* TOMBOL PESANAN BULAT (FAB) - Angka 5 */}
+            {!isMobileCartOpen && cart.length > 0 && (
+              <div className="md:hidden fixed bottom-6 right-6 z-40">
+                <button
+                  onClick={() => setIsMobileCartOpen(true)}
+                  className="w-16 h-16 bg-indigo-600 text-white rounded-full shadow-2xl flex items-center justify-center relative active:scale-90 transition-transform"
+                >
+                  <Icon name="shopping_cart" className="text-2xl" />
+                  {/* Badge Jumlah Item */}
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-white">
+                    {cart.reduce((sum, item) => sum + item.qty, 0)}
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {/* PANEL KERANJANG - Modal di HP, atau Sidebar penuh di Desktop */}
+            <div className={`${isMobileCartOpen ? 'fixed inset-0 z-40 flex flex-col bg-white' : 'hidden md:flex md:w-[400px] bg-white shadow-xl flex-col no-print border-l border-gray-200 z-20 relative h-full'}`}>
+                
+                {/* Header Keranjang untuk Mobile (Memiliki tombol close) */}
+                <div className="md:hidden p-4 border-b border-gray-100 flex justify-between items-center bg-indigo-600 text-white">
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                        <Icon name="shopping_cart" /> Pesanan ({cart.length})
+                    </h2>
+                    <button onClick={() => setIsMobileCartOpen(false)} className="p-1 hover:bg-indigo-500 rounded-lg"><Icon name="close" /></button>
+                </div>
+
+                {/* Header Keranjang Desktop */}
+                <div className="hidden md:flex p-4 md:p-5 border-b border-gray-100">
+                    <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <Icon name="shopping_cart" className="text-indigo-600" /> Pesanan ({cart.length})
+                    </h2>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {cart.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-3">
+                    <Icon name="shopping_cart" className="text-5xl opacity-30" />
+                    <p>Keranjang masih kosong</p>
+                    </div>
+                ) : (
+                    cart.map(item => (
+                        <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                            <div className="flex-1">
+                                <h4 className="font-medium text-gray-800 line-clamp-1">{item.name}</h4>
+                                <div className="text-indigo-600 font-bold text-sm">{formatRp(item.price)}</div>
+                            </div>
+                            <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 p-1">
+                                <button onClick={() => updateQty(item.id, -1)} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-md">-</button>
+                                <span className="w-4 md:w-6 text-center font-medium text-sm">{item.qty}</span>
+                                <button onClick={() => updateQty(item.id, 1)} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-md">+</button>
+                            </div>
+                            <button onClick={() => removeFromCart(item.id)} className="w-8 h-8 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-md">
+                                <Icon name="delete" className="text-base" />
+                            </button>
+                        </div>
+                    ))
+                )}
+                </div>
+                <div className="p-4 md:p-5 bg-gray-50 border-t border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                    <span className="text-gray-500 font-medium">Total</span>
+                    <span className="text-2xl font-bold text-gray-800">{formatRp(totalBelanja)}</span>
+                </div>
+                    <button onClick={handleCheckout} disabled={cart.length === 0} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2">
+                        <Icon name="attach_money" /> Bayar
+                    </button>
+                </div>
+            </div>
+
+            {/* MODAL PEMBAYARAN - VERSI SEMPURNA */}
+            {showPayment && (
+            <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+                <div className="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl">
+                <h3 className="text-2xl font-bold mb-2 text-center text-gray-700">Total Tagihan</h3>
+                <div className="text-4xl font-black text-indigo-600 mb-8 text-center">
+                    {formatRp(totalBelanja)}
+                </div>
+                
+                <div className="space-y-4">
+                    <label className="block font-bold text-gray-700">Metode Bayar:</label>
+                    <div className="grid grid-cols-2 gap-2">
+                        {/* Tombol Cash & E-Wallet tetap sama */}
+                        <button onClick={() => setPaymentMethod('Cash')} className={`py-3 rounded-xl font-bold border-2 ${paymentMethod === 'Cash' ? 'border-indigo-600 bg-indigo-50 text-indigo-600' : 'border-gray-100 bg-gray-50 text-gray-500'}`}>Cash</button>
+        
+                        {/* Tombol E-Wallet sekarang punya warna ungu khas digital payment */}
+                        <button onClick={() => setPaymentMethod('E-Wallet')} className={`py-3 rounded-xl font-bold border-2 ${paymentMethod === 'E-Wallet' ? 'border-purple-600 bg-purple-50 text-purple-600' : 'border-gray-100 bg-gray-50 text-gray-500'}`}>E-Wallet</button>
+
+                        {/* Tombol MESIN EDC & TRANSFER */}
+                        <button onClick={() => setPaymentMethod('MESIN EDC')} className={`py-3 rounded-xl font-bold border-2 ${paymentMethod === 'MESIN EDC' ? 'border-blue-600 bg-blue-50 text-blue-600' : 'border-gray-100 bg-gray-50 text-gray-500'}`}>MESIN EDC</button>
+                        <button onClick={() => setPaymentMethod('TRANSFER')} className={`py-3 rounded-xl font-bold border-2 ${paymentMethod === 'TRANSFER' ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-gray-100 bg-gray-50 text-gray-500'}`}>TRANSFER</button>
+                    </div>
+                    
+                    {/* Logika: Munculkan input nomor referensi jika pilih MESIN EDC atau TRANSFER */}
+                    {(paymentMethod === 'MESIN EDC' || paymentMethod === 'TRANSFER') && (
+                        <div className="animate-fade-in">
+                            <label className="block text-sm font-bold text-gray-600 mb-1">Nama Bank & No. Transaksi {paymentMethod}:</label>
+                            <input 
+                                type="text" 
+                                value={refNumber} 
+                                onChange={(e) => setRefNumber(e.target.value)} 
+                                placeholder="Contoh: BRI-12345.." 
+                                className="w-full p-3 bg-yellow-50 border-2 border-yellow-200 rounded-xl focus:outline-none focus:border-yellow-400" 
+                            />
+                        </div>
+                    )}
+
+                    {/* INPUT KHUSUS E-WALLET (NAMA & NOMOR TRANSAKSI) */}
+                    {paymentMethod === 'E-Wallet' && (
+                        <div className="space-y-3 animate-fade-in bg-purple-50 p-4 rounded-2xl border border-purple-100">
+                            <div>
+                                <label className="block text-xs font-bold text-purple-400 mb-1 uppercase">Nama E-Wallet:</label>
+                                <select 
+                                    value={walletName} 
+                                    onChange={(e) => setWalletName(e.target.value)}
+                                    className="w-full p-3 bg-white border-2 border-purple-100 rounded-xl outline-none focus:border-purple-500 font-bold text-purple-700"
+                                >
+                                    <option value="">-- PILIH E-WALLET --</option>
+                                    <option value="DANA">DANA</option>
+                                    <option value="GOPAY">GOPAY</option>
+                                    <option value="OVO">OVO</option>
+                                    <option value="SHOPEEPAY">SHOPEEPAY</option>
+                                    <option value="LAINNYA">LAINNYA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-purple-400 mb-1 uppercase">Nomor Transaksi:</label>
+                                <input 
+                                    type="text" 
+                                    value={refNumber} 
+                                    onChange={(e) => setRefNumber(e.target.value)} 
+                                    placeholder="Masukkan ref / ID transaksi..." 
+                                    className="w-full p-3 bg-white border-2 border-purple-100 rounded-xl outline-none focus:border-purple-500 font-bold" 
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="pt-2">
+                        <label className="block font-bold text-gray-700 mb-1">Uang Diterima:</label>
+                        <div className="relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400 text-xl">Rp</span>
+                            <input 
+                            type="text" 
+                            value={paymentAmount ? new Intl.NumberFormat('id-ID').format(paymentAmount) : ''} 
+                            onChange={(e) => setPaymentAmount(e.target.value.replace(/\D/g, ''))} 
+                            placeholder="0" 
+                            className="w-full pl-12 pr-4 py-4 text-2xl font-bold border-2 border-gray-200 rounded-2xl text-right focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all" 
+                            autoFocus 
+                            />
+                        </div>
+                    </div>
+
+                    {/* MENAMPILKAN JUMLAH KEMBALIAN */}
+                    {paymentAmount > 0 && (
+                        <div className="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-300 animate-fade-in">
+                            <div className="flex justify-between items-center">
+                                <span className="text-gray-500 font-medium text-sm">Kembalian:</span>
+                                <span className={`text-xl font-bold ${paymentAmount - totalBelanja < 0 ? 'text-red-500' : 'text-green-600'}`}>
+                                    {formatRp(paymentAmount - totalBelanja)}
+                                </span>
+                            </div>
+                            {paymentAmount - totalBelanja < 0 && (
+                            <p className="text-[10px] text-red-400 text-right mt-1">* Uang yang diterima masih kurang</p>
+                            )}
+                        </div>
+                    )}
+
+                    <div className="flex gap-3 pt-4">
+                        <button onClick={() => { setShowPayment(false); setPaymentAmount(''); }} className="flex-1 py-4 bg-gray-100 rounded-2xl font-bold text-gray-500 hover:bg-gray-200 transition-colors">BATAL</button>
+                        <button 
+                            onClick={processPayment} 
+                            disabled={paymentAmount < totalBelanja}
+                            className={`flex-1 py-4 rounded-2xl font-bold shadow-lg transition-all ${paymentAmount < totalBelanja ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-green-600 text-white shadow-green-200 hover:bg-green-700 active:scale-95'}`}
+                        >
+                            CETAK STRUK
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            )}
+            
+          {/* TAMPILAN STRUK DIGITAL SETELAH BAYAR */}
+          {lastInvoice && (
+            <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 overflow-y-auto no-print">
+              <div className="bg-white p-6 rounded-3xl w-full max-w-sm shadow-2xl animate-fade-in">
+                
+                {/* Visual Struk yang akan dicetak/disimpan */}
+                <div id="print-invoice" className="bg-white text-black font-mono text-[10pt] p-4 mb-6">
+                  <div className="text-center border-b border-dashed border-gray-300 pb-2 mb-2">
+                    <h2 className="font-bold text-lg">{storeConfig.name}</h2>
+                    <p className="text-[8pt]">{storeConfig.address}</p>
+                    <p className="text-[8pt]">Telp: {storeConfig.phone}</p>
+                  </div>
+                  
+                  <div className="text-[8pt] mb-2 space-y-1">
+                    <div className="flex justify-between"><span>ID: {lastInvoice.id}</span><span>{lastInvoice.cashierId}</span></div>
+                    <p>{new Date(lastInvoice.date).toLocaleString('id-ID')}</p>
+                  </div>
+                  
+                  <div className="border-b border-dashed border-gray-300 mb-2"></div>
+                  
+                  <table className="w-full text-[8pt] mb-2">
+                    <tbody>
+                      {lastInvoice.items.map((item, i) => (
+                        <tr key={i} className="align-top">
+                          <td className="py-1">{item.name} x{item.qty}</td>
+                          <td className="text-right py-1">{formatRp(item.price * item.qty)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  
+                  <div className="border-b border-dashed border-gray-300 mb-2"></div>
+                  
+                  <div className="space-y-1 text-[9pt]">
+                    <div className="flex justify-between font-bold"><span>TOTAL</span><span>{formatRp(lastInvoice.total)}</span></div>
+                    <div className="flex justify-between"><span>BAYAR ({lastInvoice.method})</span><span>{formatRp(lastInvoice.payment)}</span></div>
+                    <div className="flex justify-between font-bold"><span>KEMBALI</span><span>{formatRp(lastInvoice.change)}</span></div>
+                  </div>
+                  
+                  {lastInvoice.refNumber && <div className="mt-2 text-[7pt] italic text-gray-500">Ref: {lastInvoice.refNumber}</div>}
+                  
+                  <div className="text-center mt-4 text-[7pt] border-t border-dashed border-gray-300 pt-2">
+                    {storeConfig.footer || "Terima Kasih Atas Kunjungan Anda"}
+                  </div>
+                </div>
+
+                {/* Tombol Aksi */}
+                <div className="grid grid-cols-2 gap-3">
+                  <button onClick={() => window.print()} className="bg-indigo-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-bold active:scale-95 transition-all">
+                    <Icon name="print" /> Cetak
+                  </button>
+                  <button onClick={shareToWhatsApp} className="bg-green-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-bold active:scale-95 transition-all">
+                    <Icon name="share" /> WhatsApp
+                  </button>
+                  <button onClick={downloadStrukImage} className="bg-blue-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 font-bold active:scale-95 transition-all col-span-2">
+                    <Icon name="image" /> Simpan Gambar
+                  </button>
+                  <button onClick={() => setLastInvoice(null)} className="bg-gray-100 text-gray-600 py-3 rounded-xl font-bold active:scale-95 transition-all col-span-2">
+                    Tutup
+                  </button>
                 </div>
               </div>
             </div>
@@ -335,104 +996,547 @@
       );
     }
 
-    // --- ADMIN DASHBOARD ---
+    // ==========================================
+    // 3. ADMIN DASHBOARD
+    // ==========================================
     function AdminDashboard({ products, setProducts, categories, setCategories, transactions, balances, setBalances, storeConfig, setStoreConfig, onLogout, syncToSheets }) {
       const [activeTab, setActiveTab] = useState('dashboard');
-      
+      const totalPendapatan = transactions.reduce((sum, trx) => sum + trx.total, 0);
+
+      const navItems = [
+        { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
+        { id: 'products', label: 'Kelola Barang', icon: 'inventory_2' },
+        { id: 'categories', label: 'Kategori', icon: 'sell' },
+        { id: 'balances', label: 'Informasi Saldo', icon: 'account_balance_wallet' },
+        { id: 'history', label: 'Riwayat Transaksi', icon: 'history' },
+        { id: 'settings', label: 'Pengaturan', icon: 'settings' },
+      ];
+
       return (
-        <div className="flex flex-col md:flex-row h-screen overflow-hidden">
-          <div className="w-full md:w-64 bg-slate-900 text-white flex md:flex-col overflow-x-auto">
-            <div className="p-6 font-bold text-xl border-b border-slate-800">Admin Panel</div>
-            <nav className="flex-1 p-4 flex md:flex-col gap-2">
-              <button onClick={() => setActiveTab('dashboard')} className={`p-3 rounded-xl flex gap-2 ${activeTab === 'dashboard' ? 'bg-indigo-600' : ''}`}><Icon name="dashboard"/> Dashboard</button>
-              <button onClick={() => setActiveTab('products')} className={`p-3 rounded-xl flex gap-2 ${activeTab === 'products' ? 'bg-indigo-600' : ''}`}><Icon name="inventory_2"/> Barang</button>
-              <button onClick={() => setActiveTab('balances')} className={`p-3 rounded-xl flex gap-2 ${activeTab === 'balances' ? 'bg-indigo-600' : ''}`}><Icon name="account_balance_wallet"/> Saldo</button>
+        <div className="flex flex-col md:flex-row h-screen bg-slate-50">
+          <div className="w-full md:w-64 bg-slate-900 text-white flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible">
+            <div className="p-4 md:p-6 border-r md:border-r-0 md:border-b border-slate-800 flex items-center md:items-start shrink-0">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2"><Icon name="bar_chart" className="text-indigo-400" /> <span className="hidden md:inline">Admin Panel</span></h2>
+            </div>
+            <nav className="flex-1 flex flex-row md:flex-col p-2 md:p-4 md:space-y-2 gap-2 md:gap-0 shrink-0">
+              {navItems.map(item => (
+                <button key={item.id} onClick={() => setActiveTab(item.id)} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${activeTab === item.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}>
+                  <Icon name={item.icon} /> <span className="font-medium hidden md:inline">{item.label}</span>
+                </button>
+              ))}
             </nav>
-            <button onClick={onLogout} className="p-6 text-red-400 flex gap-2"><Icon name="logout"/> Keluar</button>
+            <div className="p-2 md:p-4 border-l md:border-l-0 md:border-t border-slate-800 shrink-0 flex items-center">
+              <button onClick={onLogout} className="w-full flex items-center justify-center md:justify-start gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                <Icon name="logout" /> <span className="font-medium hidden md:inline">Keluar</span>
+              </button>
+            </div>
           </div>
-          
-          <div className="flex-1 overflow-y-auto p-4 md:p-8">
-            {activeTab === 'dashboard' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-3xl shadow-sm border border-indigo-100">
-                  <div className="text-gray-400 text-sm">Total Pendapatan</div>
-                  <div className="text-2xl font-black text-indigo-600">{formatRp(transactions.reduce((s, t) => s + t.total, 0))}</div>
-                </div>
+
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="bg-white border-b border-gray-200 px-4 md:px-8 py-5 flex items-center justify-between">
+              <h1 className="text-xl md:text-2xl font-bold text-gray-800">{navItems.find(i => i.id === activeTab)?.label}</h1>
+              <div className="flex items-center gap-3">
+                <span className="bg-lime-100 text-lime-700 px-3 py-1 rounded-full text-xs md:text-sm font-semibold flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> <span className="hidden md:inline">Online</span>Connected
+                </span>
               </div>
-            )}
-            {activeTab === 'products' && <AdminProducts products={products} setProducts={setProducts} categories={categories} syncToSheets={syncToSheets} />}
-            {activeTab === 'balances' && <AdminBalances balances={balances} setBalances={setBalances} syncToSheets={syncToSheets} />}
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 md:p-8">
+              {activeTab === 'dashboard' && (
+                <div className="space-y-6">
+                  {/* Banner Admin */}
+                  <div className="w-full h-32 md:h-40 bg-indigo-100 rounded-2xl overflow-hidden relative shadow-sm">
+                     <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" alt="Admin Banner" className="w-full h-full object-cover opacity-80" />
+                     <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-transparent flex items-center p-6 md:p-8">
+                       <div className="text-white">
+                         <h2 className="text-2xl font-bold mb-1">Ringkasan Performa Toko</h2>
+                         <p className="text-sm opacity-90">Pantau pendapatan, kelola produk, dan cek mutasi saldo dengan mudah.</p>
+                       </div>
+                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                      <div className="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center"><Icon name="attach_money" className="text-3xl" /></div>
+                      <div><p className="text-gray-500 text-sm font-medium">Total Pendapatan</p><h3 className="text-xl md:text-2xl font-bold text-gray-800">{formatRp(totalPendapatan)}</h3></div>
+                    </div>
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                      <div className="w-14 h-14 bg-green-100 text-green-600 rounded-xl flex items-center justify-center"><Icon name="shopping_cart" className="text-3xl" /></div>
+                      <div><p className="text-gray-500 text-sm font-medium">Total Transaksi</p><h3 className="text-xl md:text-2xl font-bold text-gray-800">{transactions.length} Transaksi</h3></div>
+                    </div>
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+                      <div className="w-14 h-14 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center"><Icon name="inventory_2" className="text-3xl" /></div>
+                      <div><p className="text-gray-500 text-sm font-medium">Total Produk</p><h3 className="text-xl md:text-2xl font-bold text-gray-800">{products.length} Item</h3></div>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                      <h3 className="font-bold text-lg text-gray-800">Transaksi Terbaru</h3>
+                      <button onClick={() => setActiveTab('history')} className="text-indigo-600 text-sm font-medium hover:underline flex items-center">Lihat Semua <Icon name="chevron_right" /></button>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse min-w-[500px]">
+                        <thead>
+                          <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100">
+                            <th className="p-4 font-medium">ID Transaksi</th><th className="p-4 font-medium">Waktu</th><th className="p-4 font-medium">Item</th><th className="p-4 font-medium">Total Belanja</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {transactions.slice(0, 5).map((trx) => (
+                            <tr key={trx.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                              <td className="p-4 font-medium text-gray-800">{trx.id}</td><td className="p-4 text-gray-500">{new Date(trx.date).toLocaleString('id-ID')}</td>
+                              <td className="p-4 text-gray-600">{trx.items.length} Item</td><td className="p-4 font-bold text-green-600">{formatRp(trx.total)}</td>
+                            </tr>
+                          ))}
+                          {transactions.length === 0 && <tr><td colSpan="4" className="p-8 text-center text-gray-400">Belum ada transaksi</td></tr>}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'products' && <AdminProducts products={products} setProducts={setProducts} categories={categories} syncToSheets={syncToSheets} />}
+              {activeTab === 'categories' && <AdminCategories categories={categories} setCategories={setCategories} syncToSheets={syncToSheets} />}
+              {activeTab === 'balances' && <AdminBalances balances={balances} setBalances={setBalances} syncToSheets={syncToSheets} />}
+              {/* === MENGIRIM PROP storeConfig KE KOMPONEN HISTORY === */}
+              {activeTab === 'history' && <AdminHistory transactions={transactions} storeConfig={storeConfig} />}
+              {activeTab === 'settings' && <AdminSettings storeConfig={storeConfig} setStoreConfig={setStoreConfig} syncToSheets={syncToSheets} />}
+            </div>
           </div>
+        </div>
+      );
+    }
+
+    // --- SUB COMPONENTS FOR ADMIN ---
+    
+    function AdminBalances({ balances, setBalances, syncToSheets }) {
+      const [editKey, setEditKey] = useState(null);
+      const [editValue, setEditValue] = useState('');
+
+      const openEdit = (key, value) => {
+        setEditKey(key);
+        setEditValue(value.toString());
+      };
+
+      const saveEdit = (e) => {
+        e.preventDefault();
+        const val = parseInt(editValue.replace(/\D/g, '')) || 0;
+        const newBalances = { ...balances, [editKey]: val };
+        setBalances(newBalances);
+        syncToSheets('UPDATE_BALANCES', newBalances);
+        setEditKey(null);
+        showAlert({ icon: 'success', title: 'Tersimpan', text: 'Saldo berhasil diperbarui.' });
+      };
+
+      const formatInput = (val) => {
+        const num = val.replace(/\D/g, '');
+        return num ? new Intl.NumberFormat('id-ID').format(num) : '';
+      };
+
+      return (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <div className="border-b border-gray-100 pb-4 mb-6">
+            <h3 className="font-bold text-lg text-gray-800 flex items-center gap-2">
+              <Icon name="account_balance_wallet" className="text-indigo-600"/> Informasi & Kelola Saldo
+            </h3>
+            <p className="text-sm text-gray-500 mt-1">Kelola modal laci fisik, saldo otomatis pulsa, dan saldo bank.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-blue-50 border border-blue-100 p-5 rounded-2xl">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="bg-blue-100 p-2 rounded-lg text-blue-600"><Icon name="payments" /></div>
+                <h4 className="font-bold text-gray-700">Saldo Kembalian / Laci</h4>
+              </div>
+              <p className="text-sm text-gray-500 mb-4 h-12">Modal awal dan uang di laci fisik (bertambah sesuai total checkout).</p>
+              <div className="text-2xl font-bold text-blue-700 mb-4">{formatRp(balances.kembalian)}</div>
+              <button onClick={() => openEdit('kembalian', balances.kembalian)} className="w-full bg-white text-blue-600 border border-blue-200 py-2 rounded-lg font-medium hover:bg-blue-100 transition">Set Saldo Kembalian</button>
+            </div>
+
+            <div className="bg-green-50 border border-green-100 p-5 rounded-2xl">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="bg-green-100 p-2 rounded-lg text-green-600"><Icon name="sim_card" /></div>
+                <h4 className="font-bold text-gray-700">Saldo Pulsa & Data</h4>
+              </div>
+              <p className="text-sm text-gray-500 mb-4 h-12">Sisa saldo provider (berkurang otomatis saat kategori Pulsa/Data terjual).</p>
+              <div className="text-2xl font-bold text-green-700 mb-4">{formatRp(balances.pulsa)}</div>
+              <button onClick={() => openEdit('pulsa', balances.pulsa)} className="w-full bg-white text-green-600 border border-green-200 py-2 rounded-lg font-medium hover:bg-green-100 transition">Set / Top Up Saldo Pulsa</button>
+            </div>
+
+            <div className="bg-orange-50 border border-orange-100 p-5 rounded-2xl">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="bg-orange-100 p-2 rounded-lg text-orange-600"><Icon name="account_balance" /></div>
+                <h4 className="font-bold text-gray-700">Saldo Bank / Transfer</h4>
+              </div>
+              <p className="text-sm text-gray-500 mb-4 h-12">Sisa saldo rekening (berkurang otomatis saat kategori Transfer terjual).</p>
+              <div className="text-2xl font-bold text-orange-700 mb-4">{formatRp(balances.bank)}</div>
+              <button onClick={() => openEdit('bank', balances.bank)} className="w-full bg-white text-orange-600 border border-orange-200 py-2 rounded-lg font-medium hover:bg-orange-100 transition">Set / Top Up Saldo Bank</button>
+            </div>
+          </div>
+
+          {editKey && (
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+              <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
+                <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                  <h3 className="font-bold text-lg">Ubah Saldo</h3>
+                  <button onClick={() => setEditKey(null)} className="text-gray-400 hover:text-gray-600"><Icon name="close" /></button>
+                </div>
+                <form onSubmit={saveProduct} className="p-6 space-y-4">
+                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Nama Barang</label><input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label><select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white">{categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}</select></div>
+                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Stok</label><input required type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                  </div>
+                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Harga (Rp)</label><input required type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                  
+                  {/* PINDAHKAN INPUT FOTO KE SINI BRO! */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-widest">Link Foto Produk (URL):</label>
+                    <input 
+                      type="text" 
+                      value={formData.image || ''} 
+                      onChange={e => setFormData({...formData, image: e.target.value})} 
+                      placeholder="https://link-gambar.com/foto.jpg" 
+                      className="w-full px-4 py-2 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl focus:border-indigo-500 outline-none text-sm" 
+                    />
+                  </div>
+
+                  <div className="pt-4 flex justify-end gap-3">
+                    <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg">Batal</button>
+                    <button type="submit" className="px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow-md">Simpan Data</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       );
     }
 
     function AdminProducts({ products, setProducts, categories, syncToSheets }) {
       const [isModalOpen, setIsModalOpen] = useState(false);
-      const [formData, setFormData] = useState({ id: '', name: '', price: '', category: '', stock: '', image: '' });
+      const [editItem, setEditItem] = useState(null);
+      const [formData, setFormData] = useState({ id: '', name: '', price: '', category: '', stock: '' });
+
+      const openModal = (item = null) => {
+        if (item) { setEditItem(item); setFormData({ ...item }); } 
+        else { setEditItem(null); setFormData({ id: `P${Math.floor(Math.random() * 10000)}`, name: '', price: '', category: categories[0]?.name || '', stock: '' }); }
+        setIsModalOpen(true);
+      };
+
+      const deleteProduct = (id) => {
+        if (window.Swal) {
+          window.Swal.fire({ title: 'Hapus Barang?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Ya, Hapus!' }).then((result) => {
+            if (result.isConfirmed) {
+              setProducts(products.filter(p => p.id !== id));
+              syncToSheets('DELETE_PRODUCT', { id });
+              window.Swal.fire('Terhapus!', 'Barang telah dihapus.', 'success');
+            }
+          });
+        }
+      };
 
       const saveProduct = (e) => {
-        e.preventDefault();
-        const payload = { ...formData, price: parseInt(formData.price), stock: parseInt(formData.stock) };
-        setProducts([...products, payload]);
-        syncToSheets('ADD_PRODUCT', payload);
+        if (e) e.preventDefault(); // Mencegah reload halaman
+        
+        // r[0]=ID, r[1]=Nama, r[2]=Harga, r[3]=Kategori, r[4]=Stok, r[5]=Foto
+        const payload = { 
+          ...formData, 
+          price: parseInt(formData.price) || 0, 
+          stock: parseInt(formData.stock) || 0,
+          image: formData.image || '' // Mengambil link foto dari inputan baru
+        };
+
+        if (editItem) {
+          setProducts(products.map(p => p.id === editItem.id ? payload : p));
+          showAlert({ icon: 'success', title: 'Berhasil', text: 'Data barang diperbarui' });
+          syncToSheets('UPDATE_PRODUCT', payload);
+        } else {
+          setProducts([...products, payload]);
+          showAlert({ icon: 'success', title: 'Berhasil', text: 'Barang baru ditambahkan' });
+          syncToSheets('ADD_PRODUCT', payload);
+        }
         setIsModalOpen(false);
       };
 
       return (
-        <div className="bg-white p-6 rounded-3xl shadow-sm">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-bold text-lg">Kelola Barang</h3>
-            <button onClick={() => { setFormData({ id: Date.now(), name: '', price: '', category: categories[0]?.name, stock: '', image: '' }); setIsModalOpen(true); }} className="bg-indigo-600 text-white px-4 py-2 rounded-xl">+ Tambah</button>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
+          <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            <h3 className="font-bold text-lg text-gray-800">Daftar Barang</h3>
+            <button onClick={() => openModal()} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 font-medium transition-colors w-full md:w-auto">
+              <Icon name="add" /> Tambah Barang
+            </button>
           </div>
-          <table className="w-full text-left">
-            <thead><tr className="text-gray-400 text-sm border-b"><th>Nama</th><th>Harga</th><th>Stok</th></tr></thead>
-            <tbody>{products.map(p => <tr key={p.id} className="border-b"><td>{p.name}</td><td>{formatRp(p.price)}</td><td>{p.stock}</td></tr>)}</tbody>
-          </table>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[600px]">
+              <thead>
+                <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100">
+                  <th className="p-4 font-medium">Kode</th><th className="p-4 font-medium">Nama Barang</th><th className="p-4 font-medium">Kategori</th><th className="p-4 font-medium">Harga</th><th className="p-4 font-medium">Stok</th><th className="p-4 font-medium text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map(p => (
+                  <tr key={p.id} className="border-b border-gray-50 hover:bg-gray-50">
+                    <td className="p-4 font-medium text-gray-600">{p.id}</td><td className="p-4 text-gray-800 font-medium">{p.name}</td>
+                    <td className="p-4 text-gray-600"><span className="bg-gray-100 px-2 py-1 rounded-md text-xs">{p.category}</span></td>
+                    <td className="p-4 text-gray-800">{formatRp(p.price)}</td><td className="p-4 text-gray-800">{p.stock}</td>
+                    <td className="p-4 flex items-center justify-center gap-2">
+                      <button onClick={() => openModal(p)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"><Icon name="edit" className="text-base" /></button>
+                      <button onClick={() => deleteProduct(p.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"><Icon name="delete" className="text-base" /></button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
           {isModalOpen && (
             <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-              <form onSubmit={saveProduct} className="bg-white p-6 rounded-3xl w-full max-w-md space-y-4">
-                <input required placeholder="Nama Barang" className="w-full p-2 border rounded" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-                <input required type="number" placeholder="Harga" className="w-full p-2 border rounded" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} />
-                <input required type="number" placeholder="Stok" className="w-full p-2 border rounded" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
-                <select className="w-full p-2 border rounded" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>{categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}</select>
-                <div className="flex gap-2"><button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 bg-gray-100 py-2 rounded">Batal</button><button type="submit" className="flex-1 bg-indigo-600 text-white py-2 rounded">Simpan</button></div>
-              </form>
+              <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+                <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                  <h3 className="font-bold text-lg">{editItem ? 'Edit Barang' : 'Tambah Barang Baru'}</h3>
+                  <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600"><Icon name="close" /></button>
+                </div>
+                <form onSubmit={saveProduct} className="p-6 space-y-4">
+                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Nama Barang</label><input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label><select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white">{categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}</select></div>
+                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Stok</label><input required type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                  </div>
+                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Harga (Rp)</label><input required type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                  {/* TAMBAHKAN INPUT LINK FOTO DI SINI */}
+                  <div className="pt-2">
+                    <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-widest">Link Foto Produk (URL):</label>
+                    <input 
+                      type="text" 
+                      value={formData.image || ''} 
+                      onChange={e => setFormData({...formData, image: e.target.value})} 
+                      placeholder="https://link-gambar.com/foto.jpg" 
+                      className="w-full px-4 py-2 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl focus:border-indigo-500 outline-none text-sm" 
+                    />
+                    <p className="text-[9px] text-slate-400 mt-1">*Bisa ambil link dari internet atau upload di ImgBB/PostImages</p>
+                  </div>
+                  <div className="pt-4 flex justify-end gap-3">
+                    <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg">Batal</button>
+                    <button type="submit" className="px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow-md">Simpan Data</button>
+                  </div>
+                </form>
+              </div>
             </div>
           )}
         </div>
       );
     }
 
-    function AdminBalances({ balances, setBalances, syncToSheets }) {
-      const updateBalance = (key) => {
-        window.Swal.fire({
-          title: `Update Saldo ${key}`,
-          input: 'number',
-          showCancelButton: true
-        }).then(res => {
-          if (res.isConfirmed) {
-            const newVal = parseInt(res.value) || 0;
-            const nb = { ...balances, [key]: newVal };
-            setBalances(nb);
-            syncToSheets('UPDATE_BALANCES', nb);
-          }
-        });
+    function AdminCategories({ categories, setCategories, syncToSheets }) {
+      const addCategory = () => {
+        if (window.Swal) {
+          window.Swal.fire({ title: 'Tambah Kategori', input: 'text', inputPlaceholder: 'Nama kategori baru...', showCancelButton: true, confirmButtonText: 'Simpan', cancelButtonText: 'Batal' }).then((result) => {
+            if (result.isConfirmed && result.value) {
+              const newCat = { id: Date.now(), name: result.value };
+              setCategories([...categories, newCat]);
+              syncToSheets('ADD_CATEGORY', newCat);
+              window.Swal.fire('Berhasil!', 'Kategori ditambahkan.', 'success');
+            }
+          });
+        }
+      };
+      const deleteCategory = (id) => {
+        if(window.confirm('Hapus kategori ini?')) { setCategories(categories.filter(c => c.id !== id)); syncToSheets('DELETE_CATEGORY', { id }); }
       };
 
       return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {Object.entries(balances).map(([k, v]) => (
-            <div key={k} className="bg-white p-6 rounded-3xl border text-center">
-              <div className="uppercase text-xs text-gray-400 mb-1">{k}</div>
-              <div className="text-xl font-bold mb-4">{formatRp(v)}</div>
-              <button onClick={() => updateBalance(k)} className="text-indigo-600 text-sm font-bold">Ubah Saldo</button>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 max-w-2xl">
+          <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+            <h3 className="font-bold text-lg text-gray-800">Manajemen Kategori</h3>
+            <button onClick={addCategory} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors"><Icon name="add" /> Tambah</button>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {categories.map(cat => (
+                <div key={cat.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-gray-50">
+                  <span className="font-medium text-gray-800">{cat.name}</span>
+                  <button onClick={() => deleteCategory(cat.id)} className="text-red-500 hover:bg-red-100 p-1 rounded"><Icon name="delete" className="text-base" /></button>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       );
     }
 
+    // ==========================================
+    // MENU RIWAYAT TRANSAKSI (DENGAN FITUR EXPORT PDF)
+    // ==========================================
+    function AdminHistory({ transactions, storeConfig }) {
+
+      // LOGIKA UNTUK MENGHASILKAN PDF
+        const handleDownloadPDF = () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4'); // 'l' untuk Landscape supaya kolomnya lega
+
+        // Header Laporan
+        doc.setFontSize(18);
+        doc.text(`Laporan Transaksi - ${storeConfig.name}`, 14, 20);
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 28);
+
+        // Garis Pemisah
+        doc.setLineWidth(0.5);
+        doc.line(14, 32, 280, 32);
+
+        const tableColumn = ["ID Transaksi", "Kasir", "Tanggal & Waktu", "Metode", "Item", "Total"];
+        const tableRows = [];
+
+        transactions.forEach(trx => {
+            // Gabungkan item jadi teks
+            const itemStr = trx.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+            
+            // Gabungkan Metode + Ref jika ada
+            const metodeStr = trx.refNumber 
+            ? `${trx.method}\n(Ref: ${trx.refNumber})` 
+            : trx.method || 'Cash';
+
+            const transactionData = [
+            trx.id,
+            trx.cashierId || '-',
+            new Date(trx.date).toLocaleString('id-ID'),
+            metodeStr, // KOLOM BARU
+            itemStr,
+            formatRp(trx.total)
+            ];
+            tableRows.push(transactionData);
+        });
+
+        // Render Tabel menggunakan autoTable
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 38,
+            theme: 'grid',
+            headStyles: { fillColor: [79, 70, 229], halign: 'center' }, // Warna Indigo (Indigo-600)
+            styles: { fontSize: 9, cellPadding: 3 },
+            columnStyles: {
+            0: { cellWidth: 30 }, // ID
+            1: { cellWidth: 25 }, // Kasir
+            2: { cellWidth: 40 }, // Tanggal
+            3: { cellWidth: 35 }, // Metode (Agak lebar buat Ref)
+            4: { cellWidth: 'auto' }, // Item (Fleksibel)
+            5: { cellWidth: 35, halign: 'right' } // Total
+            },
+            didParseCell: function(data) {
+            // Bikin teks total jadi tebal
+            if (data.column.index === 5 && data.section === 'body') {
+                data.cell.styles.fontStyle = 'bold';
+            }
+            }
+        });
+
+        // Footer di bawah tabel
+        const finalY = doc.lastAutoTable.finalY || 40;
+        const grandTotal = transactions.reduce((sum, t) => sum + t.total, 0);
+        
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        doc.text(`GRAND TOTAL: ${formatRp(grandTotal)}`, 280, finalY + 10, { align: 'right' });
+
+        doc.save(`Laporan_Toko_Lek_Heru_${Date.now()}.pdf`);
+        };
+
+      return (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
+          <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            <h3 className="font-bold text-lg text-gray-800 flex items-center gap-2">
+              <Icon name="history" className="text-indigo-600"/> Riwayat Lengkap & Rekap
+            </h3>
+            <button onClick={handleDownloadPDF} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 font-medium transition-colors shadow-sm">
+              <Icon name="picture_as_pdf" /> Download PDF
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[800px]">
+              <thead>
+                <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100">
+                  <th className="p-4 font-medium">ID Transaksi</th>
+                  <th className="p-4 font-medium">Kasir</th>
+                  <th className="p-4 font-medium">Tanggal & Waktu</th>
+                  <th className="p-4 font-medium">Metode</th> {/* KOLOM BARU */}
+                  <th className="p-4 font-medium">Rincian Item</th>
+                  <th className="p-4 font-medium text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.map((trx) => (
+                  <tr key={trx.id} className="border-b border-gray-50 hover:bg-gray-50">
+                    <td className="p-4 font-bold text-gray-700">{trx.id}</td>
+                    <td className="p-4 font-medium text-indigo-600">{trx.cashierId || '-'}</td>
+                    <td className="p-4 text-gray-600 text-xs">{new Date(trx.date).toLocaleString('id-ID')}</td>
+                    
+                    {/* ISI KOLOM METODE PEMBAYARAN */}
+                    <td className="p-4">
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase ${
+                        trx.method === 'Cash' ? 'bg-green-100 text-green-700' : 
+                        trx.method === 'MESIN EDC' ? 'bg-blue-100 text-blue-700' : 
+                        'bg-purple-100 text-purple-700'
+                      }`}>
+                        {trx.method || 'Cash'}
+                      </span>
+                      {trx.refNumber && <div className="text-[9px] text-gray-400 mt-1">Ref: {trx.refNumber}</div>}
+                    </td>
+
+                    <td className="p-4">
+                      <div className="flex flex-wrap gap-1">
+                        {trx.items.map((item, i) => (
+                          <span key={i} className="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                            {item.qty}x {item.name}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="p-4 font-bold text-green-600 text-right">{formatRp(trx.total)}</td>
+                  </tr>
+                ))}
+                {transactions.length === 0 && <tr><td colSpan="6" className="p-12 text-center text-gray-400">Belum ada riwayat transaksi.</td></tr>}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    function AdminSettings({ storeConfig, setStoreConfig, syncToSheets }) {
+      const [formData, setFormData] = useState(storeConfig);
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        setStoreConfig(formData);
+        syncToSheets('UPDATE_SETTINGS', formData);
+        showAlert({ icon: 'success', title: 'Tersimpan', text: 'Pengaturan toko berhasil diperbarui.' });
+      };
+
+      return (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 max-w-2xl">
+          <div className="p-6 border-b border-gray-100">
+            <h3 className="font-bold text-lg text-gray-800 flex items-center gap-2"><Icon name="settings" className="text-indigo-600"/> Pengaturan Sistem / Struk</h3>
+          </div>
+          <form onSubmit={handleSubmit} className="p-6 space-y-5">
+            <div><label className="block text-sm font-medium text-gray-700 mb-1">Nama Toko / Bisnis</label><input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+            <div><label className="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap</label><textarea required rows="3" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+            <div><label className="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label><input required type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+            <div><label className="block text-sm font-medium text-gray-700 mb-1">Pesan Penutup di Struk (Footer)</label><input required type="text" value={formData.footer} onChange={e => setFormData({...formData, footer: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+            <div className="pt-4 border-t border-gray-100">
+              <button type="submit" className="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all">Simpan Konfigurasi</button>
+            </div>
+          </form>
+        </div>
+      );
+    }
+
+    // Render App ke DOM
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
