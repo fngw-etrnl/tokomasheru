@@ -27,6 +27,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
       <style>
+        body {
+          padding-top: env(safe-area-inset-top);
+          background-color: #4f46e5; /* Ini warna Indigo biar nyambung sama header */
+          margin: 0;
+        }
         /* Animasi Fade In untuk Modal/Keranjang */
         .animate-slide-up {
           animation: slideUp 0.3s ease-out;
@@ -63,6 +68,7 @@
       <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3081/3081648.png">
 
       <meta name="theme-color" content="#4f46e5">
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">">
 
 </head>
 <body class="bg-slate-50">
