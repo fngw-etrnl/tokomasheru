@@ -28,17 +28,31 @@
 
       <style>
         body {
-          padding-top: env(safe-area-inset-top);
-          background-color: #4f46e5; /* Ini warna Indigo biar nyambung sama header */
           margin: 0;
+          padding: 0;
+          /* Kunci utama: background body harus Indigo agar area status bar tertutup warna */
+          background-color: #4f46e5; 
+          min-height: 100vh;
+          /* Tambahin ini biar area jam iPhone transparan dan konten bisa 'naik' */
+          padding-top: env(safe-area-inset-top);
+          overscroll-behavior: none;
         }
-        .login-container {
+        .full-immersive {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          background: linear-gradient(to bottom right, #6366f1, #a855f7); /* Samain sama gradient lo */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        /*.login-container {
           height: 100dvh;
           display: flex;
           align-items: center;
           justify-content: center;
           touch-action: none; /* Matiin interaksi sentuh buat scroll di area ini */
-        }
+        /*}
         /* Animasi Fade In untuk Modal/Keranjang */
         .animate-slide-up {
           animation: slideUp 0.3s ease-out;
@@ -197,7 +211,12 @@
         localStorage.removeItem('tokoHeru_cashier');
       };
 
-      if (loading) return <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-2xl font-bold">"Bismillah.."</div>;
+      if (loading) return (
+        <div className="full-immersive text-white text-2xl font-bold italic">
+          "Bismillah.."
+        </div>
+      );
+      
       if (!userRole) {
         return <LoginScreen onLogin={handleLoginSuccess} />;
       }
@@ -306,7 +325,7 @@
       };
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 p-4">
+        <div className="full-immersive p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
             <div className="text-center mb-8">
               <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
