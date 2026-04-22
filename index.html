@@ -527,9 +527,6 @@
             
             if (!nominal) return window.Swal.showValidationMessage('Isi nominal!');
 
-            // Kuncinya di sini Bro:
-            // Kalau layanannya "Transfer Bank", kita cari "TRF [Vendor]"
-            // Kalau layanannya "Tarik Tunai", kita cari "TARIK [Vendor]"
             let keyword = "";
             if (action.name === 'Transfer Bank') keyword = `TRF ${vendor}`;
             else if (action.name === 'Tarik Tunai') keyword = `TARIK ${vendor}`;
@@ -873,8 +870,8 @@
                             onClick={() => addToCart(product)} 
                             className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 hover:border-indigo-400 cursor-pointer transition-all active:scale-95 flex flex-col h-full"
                         >
-                            {/* Box Ikon/Gambar diperkecil h-20 */}
-                            <div className="h-20 bg-slate-50 rounded-xl mb-2 flex items-center justify-center overflow-hidden">
+                            {/* Box Ikon/Gambar diperkecil h-35 */}
+                            <div className="h-35 bg-slate-50 rounded-xl mb-2 flex items-center justify-center overflow-hidden">
                                 {product.image ? (
                                     <img 
                                         src={product.image} 
