@@ -87,20 +87,27 @@
           /* TAMPILKAN HANYA kloningan struk */
           body > #print-clone {
             display: block !important;
-            position: relative !important; /* Jangan absolute, biar struk panjang gak kepotong */
-            width: 58mm !important; /* Samain sama ukuran @page */
+            position: relative !important;
+            width: 58mm !important;
             margin: 0 auto !important;
-            padding: 3mm !important; /* Kasih jarak aman dari tepi kertas */
+            
+            /* TAMBAHIN PADDING ATAS DI SINI BRO */
+            padding-top: 10mm !important; /* Kita kasih jarak 1cm dari ujung kertas */
+            padding-bottom: 5mm !important;
+            padding-left: 2mm !important;
+            padding-right: 2mm !important;
+            
             background: white !important;
             color: black !important;
-            font-family: 'Courier New', Courier, monospace !important; /* Font khas kasir */
+            font-family: 'Courier New', Courier, monospace !important;
             font-size: 11px !important;
-            line-height: 1.3 !important;
+            line-height: 1.2 !important;
           }
         
           /* Biar teks nama barang yang panjang otomatis turun ke bawah, nggak motong kertas */
-          #print-clone * {
-            word-break: break-word !important;
+          #print-clone .text-center {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
           }
         
           /* Sembunyikan elemen UI di dalam struk kalau masih ada yang ngikut */
