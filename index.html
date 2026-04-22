@@ -885,8 +885,8 @@
                             </div>
                             
                             {/* Teks diperkecil pakai text-[11px] */}
-                            <h4 className="font-bold text-[11px] uppercase text-slate-700 line-clamp-1 mb-1">
-                                {product.name}
+                            <h4 className="font-bold text-[11px] uppercase text-slate-700 leading-tight mb-1">
+                              {product.name}
                             </h4>
                             
                             <div className="flex justify-between items-end mt-auto">
@@ -947,7 +947,7 @@
                     cart.map(item => (
                         <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
                             <div className="flex-1">
-                                <h4 className="font-medium text-gray-800 line-clamp-1">{item.name}</h4>
+                                <h4 className="font-medium text-gray-800 leading-tight mb-1">{item.name}</h4>
                                 <div className="text-indigo-600 font-bold text-sm">{formatRp(item.price)}</div>
                             </div>
                             <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 p-1">
