@@ -68,9 +68,8 @@
         }
         
         @media print {
-          /* Maksa browser untuk mengenali ukuran kertas kasir (Default 58mm) */
           @page { 
-            size: 58mm auto; /* Kalau printer lo 80mm, ganti angka 58 jadi 80 */
+            size: 58mm auto; 
             margin: 0; 
           }
           
@@ -87,34 +86,33 @@
           /* TAMPILKAN HANYA kloningan struk */
           body > #print-clone {
             display: block !important;
-            position: relative !important; /* Jangan absolute, biar struk panjang gak kepotong */
-            width: 58mm !important; /* Samain sama ukuran @page */
-            margin: 0 auto !important;
+            position: absolute !important; /* Pakai absolute biar nempel kiri atas */
+            top: 0 !important;
+            left: 0 !important;
+            width: 58mm !important;
+            margin: 0 !important;
+            padding: 2mm !important;
             
-            padding-top: 10mm !important; /* Kita kasih jarak 1cm dari ujung kertas */
-            padding-bottom: 5mm !important;
-            padding-left: 2mm !important;
-            padding-right: 2mm !important;
+            /* JURUS ANTI KEPOTONG: Kita kasih batas putih tebal di atas struk */
+            border-top: 15mm solid white !important; 
             
             background: white !important;
             color: black !important;
-            font-family: 'Courier New', Courier, monospace !important; /* Font khas kasir */
+            font-family: 'Courier New', Courier, monospace !important;
             font-size: 11px !important;
             line-height: 1.3 !important;
           }
           
-          /* Mastiin header struk bener-bener turun */
+          /* Mastiin teks rata tengah nggak kena margin aneh */
           #print-clone .text-center {
             margin-top: 0 !important;
             padding-top: 0 !important;
           }
           
-          /* Biar teks nama barang yang panjang otomatis turun ke bawah, nggak motong kertas */
           #print-clone * {
             word-break: break-word !important;
           }
         
-          /* Sembunyikan elemen UI di dalam struk kalau masih ada yang ngikut */
           #print-clone button, #print-clone .no-print {
             display: none !important;
           }
@@ -648,18 +646,28 @@
         const printElement = document.getElementById('print-invoice');
         if (!printElement) return;
         
+        // Bersihkan kalau ada sisa kloningan dari transaksi sebelumnya
+        const oldClone = document.getElementById('print-clone');
+        if (oldClone) oldClone.remove();
+
         // 1. Buat kloningan elemen struk persis sama
         const clone = printElement.cloneNode(true);
-        clone.id = 'print-clone'; // Kasih ID baru biar kebaca sama CSS Print kita
+        clone.id = 'print-clone'; 
         
-        // 2. Tempel langsung ke body HTML (keluar dari modal React yang rumit)
+        // 2. Tempel langsung ke body HTML
         document.body.appendChild(clone);
         
-        // 3. Trigger layar print bawaan HP/Laptop
-        window.print();
-        
-        // 4. Bersihkan lagi setelah layar print ditutup biar memori nggak bocor
-        document.body.removeChild(clone);
+        // 3. JEDA WAKTU SAKTI (Biar Safari sempet ngerender struknya)
+        setTimeout(() => {
+          window.print();
+          
+          // 4. Hapus struknya AGAK LAMA setelah nge-print (kasih waktu 2 detik)
+          setTimeout(() => {
+            const el = document.getElementById('print-clone');
+            if (el) el.remove();
+          }, 2000);
+          
+        }, 300); // 300ms udah cukup buat browser mikir
       };
       
       const processPayment = () => {
