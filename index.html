@@ -90,17 +90,25 @@
             position: relative !important; /* Jangan absolute, biar struk panjang gak kepotong */
             width: 58mm !important; /* Samain sama ukuran @page */
             margin: 0 auto !important;
+            
             padding-top: 10mm !important; /* Kita kasih jarak 1cm dari ujung kertas */
             padding-bottom: 5mm !important;
             padding-left: 2mm !important;
             padding-right: 2mm !important;
+            
             background: white !important;
             color: black !important;
             font-family: 'Courier New', Courier, monospace !important; /* Font khas kasir */
             font-size: 11px !important;
             line-height: 1.3 !important;
           }
-        
+          
+          /* Mastiin header struk bener-bener turun */
+          #print-clone .text-center {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+          }
+          
           /* Biar teks nama barang yang panjang otomatis turun ke bawah, nggak motong kertas */
           #print-clone * {
             word-break: break-word !important;
