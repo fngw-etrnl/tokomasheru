@@ -712,8 +712,7 @@
                   });
               }
           });
-          
-          // ==========================================
+                // ==========================================
           // LOGIKA UNTUK PRODUK BIASA (DENGAN CEK STOK)
           // ==========================================
           // setCart(prevCart => {
@@ -729,10 +728,11 @@
             // }
             // return [...prevCart, { ...p, qty: 1 }];
           // });
-
+      };
       const removeFromCart = (id) => setCart(prev => prev.filter(item => item.id !== id));
       
       const totalBelanja = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      
 
       const handleCheckout = () => {
         if (cart.length === 0) return;
@@ -1719,6 +1719,7 @@
     // ==========================================
     function AdminHistory({ transactions, storeConfig }) {
 
+      // Hitung Keuntungan (Untung = Harga Bersih - Modal)
       const calculateTrxProfit = (items) => {
         return items.reduce((sum, item) => {
           const modal = item.modal || 0;
@@ -1730,6 +1731,7 @@
         }, 0);
       };
 
+      // Hitung Total Modal
       const calculateTrxModal = (items) => {
         return items.reduce((sum, item) => {
           const modal = item.modal || 0;
@@ -1741,9 +1743,18 @@
         }, 0);
       };
 
-      // FUNGSI BARU UNTUK HITUNG TOTAL DISKON
+      // Hitung Total Diskon
       const calculateTrxDiskon = (items) => {
         return items.reduce((sum, item) => sum + ((item.diskon || 0) * item.qty), 0);
+      };
+
+      // FUNGSI BARU: Hitung Harga Jual Asli (Sebelum Diskon)
+      const calculateTrxGross = (items) => {
+        return items.reduce((sum, item) => {
+          const d = item.diskon || 0;
+          // Harga asli = Harga bersih di keranjang (item.price) + Diskon
+          return sum + ((item.price + d) * item.qty);
+        }, 0);
       };
 
       const handleDownloadPDF = () => {
@@ -1762,12 +1773,15 @@
           doc.setLineWidth(0.5);
           doc.line(14, 30, 280, 30);
 
-          // TAMBAH HEADER DISKON
-          const tableColumn = ["ID", "Kasir", "Waktu", "Metode", "Rincian Item", "Harga Modal", "Keuntungan", "Diskon", "Harga Jual"];
+          // Header Tabel PDF sesuai request lo
+          const tableColumn = ["ID", "Kasir", "Waktu", "Metode", "Rincian Item", "Harga Modal", "Keuntungan", "Harga Jual", "Diskon", "Total"];
+          
           const tableRows = transactions.map(trx => {
             const untung = calculateTrxProfit(trx.items);
             const modal = calculateTrxModal(trx.items);
             const diskon = calculateTrxDiskon(trx.items);
+            const gross = calculateTrxGross(trx.items); // Harga Asli
+            
             return [
               trx.id,
               trx.cashierId || '-',
@@ -1776,8 +1790,9 @@
               trx.items.map(i => `${i.qty}x ${i.name}`).join(', '),
               formatRp(modal),
               formatRp(untung),
-              formatRp(diskon), // Masukkan data diskon
-              formatRp(trx.total)
+              formatRp(gross), // Harga Jual Sebelum Diskon
+              formatRp(diskon), // Nilai Diskon
+              formatRp(trx.total) // Total Setelah Diskon
             ];
           });
 
@@ -1788,25 +1803,25 @@
             theme: 'grid',
             headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], halign: 'center' },
             columnStyles: {
-              5: { halign: 'right' }, // Harga Modal
-              6: { halign: 'right', fontStyle: 'bold' }, // Keuntungan
-              7: { halign: 'right', textColor: [219, 39, 119] }, // Diskon (Warna Pink)
-              8: { halign: 'right', fontStyle: 'bold' }  // Harga Jual
+              5: { halign: 'right' }, // Modal
+              6: { halign: 'right', fontStyle: 'bold' }, // Untung
+              7: { halign: 'right' }, // Harga Jual Asli
+              8: { halign: 'right', textColor: [219, 39, 119] }, // Diskon (Pink)
+              9: { halign: 'right', fontStyle: 'bold' }  // Total Bersih
             },
-            styles: { textColor: [0, 0, 0], fontSize: 9 },
+            styles: { textColor: [0, 0, 0], fontSize: 8 },
           });
 
           const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 40;
           const grandTotalTransaksi = transactions.reduce((sum, t) => sum + t.total, 0);
           const grandTotalUntung = transactions.reduce((sum, t) => sum + calculateTrxProfit(t.items), 0);
           const grandTotalModal = transactions.reduce((sum, t) => sum + calculateTrxModal(t.items), 0);
-          const grandTotalDiskon = transactions.reduce((sum, t) => sum + calculateTrxDiskon(t.items), 0); // Total Diskon
+          const grandTotalDiskon = transactions.reduce((sum, t) => sum + calculateTrxDiskon(t.items), 0);
           
           doc.setFontSize(11);
           doc.setFont(undefined, 'bold');
           doc.line(180, finalY + 5, 280, finalY + 5);
           
-          // REKAP BAWAH
           doc.setTextColor(71, 85, 105); 
           doc.text(`TOTAL HARGA MODAL :`, 180, finalY + 12);
           doc.text(`${formatRp(grandTotalModal)}`, 280, finalY + 12, { align: 'right' });
@@ -1816,7 +1831,7 @@
           doc.text(`${formatRp(grandTotalDiskon)}`, 280, finalY + 19, { align: 'right' });
 
           doc.setTextColor(0, 0, 0); 
-          doc.text(`TOTAL PENGHASILAN KOTOR :`, 180, finalY + 26);
+          doc.text(`TOTAL PENGHASILAN BERSIH :`, 180, finalY + 26);
           doc.text(`${formatRp(grandTotalTransaksi)}`, 280, finalY + 26, { align: 'right' });
           
           doc.setTextColor(22, 163, 74); 
@@ -1842,25 +1857,28 @@
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[1050px]">
+            {/* Tabel dilebarkan sedikit biar 10 kolom muat sempurna */}
+            <table className="w-full text-left border-collapse min-w-[1200px]">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100">
                   <th className="p-4 font-medium">ID</th>
                   <th className="p-4 font-medium">Kasir</th>
                   <th className="p-4 font-medium">Waktu</th>
                   <th className="p-4 font-medium">Metode</th>
-                  <th className="p-4 font-medium">Rincian Item</th>
+                  <th className="p-4 font-medium w-1/4">Rincian Item</th>
                   <th className="p-4 font-medium text-right bg-orange-50 text-orange-700">Harga Modal</th>
                   <th className="p-4 font-medium text-right bg-emerald-50 text-emerald-700">Keuntungan</th>
+                  <th className="p-4 font-medium text-right bg-blue-50 text-blue-700">Harga Jual</th>
                   <th className="p-4 font-medium text-right bg-pink-50 text-pink-700">Diskon</th>
-                  <th className="p-4 font-medium text-right">Harga Jual</th>
+                  <th className="p-4 font-medium text-right">Total</th>
                 </tr>
               </thead>
               <tbody>
                 {transactions.map((trx) => {
                   const untungTrx = calculateTrxProfit(trx.items);
                   const modalTrx = calculateTrxModal(trx.items);
-                  const diskonTrx = calculateTrxDiskon(trx.items); // Panggil fungsi diskon
+                  const diskonTrx = calculateTrxDiskon(trx.items);
+                  const grossTrx = calculateTrxGross(trx.items); // Harga Asli
 
                   return (
                     <tr key={trx.id} className="border-b border-gray-50 hover:bg-gray-50">
@@ -1880,14 +1898,18 @@
                       <td className="p-4 font-medium text-orange-600 text-right bg-orange-50/30">{formatRp(modalTrx)}</td>
                       <td className="p-4 font-bold text-emerald-600 text-right bg-emerald-50/30">{formatRp(untungTrx)}</td>
                       
-                      {/* KOLOM DISKON BARU DI TABEL */}
+                      {/* KOLOM HARGA JUAL ASLI */}
+                      <td className="p-4 font-medium text-blue-600 text-right bg-blue-50/30">{formatRp(grossTrx)}</td>
+                      
+                      {/* KOLOM DISKON */}
                       <td className="p-4 font-bold text-pink-500 text-right bg-pink-50/30">{formatRp(diskonTrx)}</td>
                       
-                      <td className="p-4 font-bold text-gray-800 text-right">{formatRp(trx.total)}</td>
+                      {/* KOLOM TOTAL (HARGA BERSIH) */}
+                      <td className="p-4 font-black text-gray-800 text-right">{formatRp(trx.total)}</td>
                     </tr>
                   );
                 })}
-                {transactions.length === 0 && <tr><td colSpan="9" className="p-12 text-center text-gray-400">Belum ada riwayat transaksi.</td></tr>}
+                {transactions.length === 0 && <tr><td colSpan="10" className="p-12 text-center text-gray-400">Belum ada riwayat transaksi.</td></tr>}
               </tbody>
             </table>
           </div>
