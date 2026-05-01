@@ -1656,7 +1656,7 @@
           doc.line(14, 30, 280, 30);
 
           // TAMBAH KOLOM MODAL DI PDF
-          const tableColumn = ["ID", "Kasir", "Waktu", "Metode", "Rincian Item", "Harga Modal", "Keuntungan", "Total (Kotor)"];
+          const tableColumn = ["ID", "Kasir", "Waktu", "Metode", "Rincian Item", "Harga Modal", "Keuntungan", "Harga Jual"];
           const tableRows = transactions.map(trx => {
             const untung = calculateTrxProfit(trx.items);
             const modal = calculateTrxModal(trx.items);
@@ -1681,7 +1681,7 @@
             columnStyles: {
               5: { halign: 'right' }, // Kolom Harga Modal
               6: { halign: 'right', fontStyle: 'bold' }, // Kolom Keuntungan
-              7: { halign: 'right', fontStyle: 'bold' }  // Kolom Total
+              7: { halign: 'right', fontStyle: 'bold' }  // Kolom Total/Harga Jual
             },
             styles: { textColor: [0, 0, 0], fontSize: 9 },
           });
@@ -1742,7 +1742,7 @@
                   <th className="p-4 font-medium">Rincian Item</th>
                   <th className="p-4 font-medium text-right bg-orange-50 text-orange-700">Harga Modal</th>
                   <th className="p-4 font-medium text-right bg-emerald-50 text-emerald-700">Keuntungan</th>
-                  <th className="p-4 font-medium text-right">Total</th>
+                  <th className="p-4 font-medium text-right">Harga Jual</th>
                 </tr>
               </thead>
               <tbody>
@@ -1772,7 +1772,7 @@
                       <td className="p-4 font-bold text-emerald-600 text-right bg-emerald-50/30">
                         {formatRp(untungTrx)}
                       </td>
-                      {/* KOLOM TOTAL KOTOR */}
+                      {/* KOLOM TOTAL KOTOR / HARGA JUAL */}
                       <td className="p-4 font-bold text-gray-800 text-right">{formatRp(trx.total)}</td>
                     </tr>
                   );
