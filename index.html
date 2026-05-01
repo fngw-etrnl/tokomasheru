@@ -579,18 +579,15 @@
           }
 
           // 2. Deteksi kategori: Munculkan form Keterangan di semua kategori KECUALI 3 ini
-          // const cat = p.category ? p.category.toLowerCase().trim() : '';
-          // const showKeterangan = cat !== 'pulsa' && cat !== 'voucher & kartu' && cat !== 'pulsa pln';
-          
-          // 3. Munculkan form Keterangan di semua kategori
-             const showKeterangan = true;
-          
-        let extraHtml = '';
+          const cat = p.category ? p.category.toLowerCase().trim() : '';
+          const showKeterangan = cat !== 'pulsa' && cat !== 'voucher & kartu' && cat !== 'pulsa pln';
+
+          let extraHtml = '';
           if (showKeterangan) {
               extraHtml = `
                   <div class="mb-3">
-                      <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Keterangan Produk Yang Dibeli:</label>
-                      <input id="swal-keterangan" type="text" class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 font-bold text-slate-700" placeholder="Contoh: IM3 10Gb / 50.000 / Tipe / Varian Warna...">
+                      <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Keterangan / Catatan (Opsional):</label>
+                      <input id="swal-keterangan" type="text" class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 font-bold text-slate-700" placeholder="Contoh: SN / IMEI / Varian Warna...">
                   </div>
               `;
           }
@@ -622,21 +619,13 @@
                               </div>
                           </div>
                       </div>
-
-                      <!-- INPUT DISKON BARU -->
-                      <div class="mt-3">
-                          <label class="block text-[10px] font-bold text-pink-500 mb-1 uppercase tracking-widest">Diskon (Rp) - Opsional:</label>
-                          <div class="relative">
-                              <span class="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-pink-400">Rp</span>
-                              <input id="swal-diskon-input" type="text" value="0" class="w-full p-3 pl-8 font-black border-2 border-pink-200 bg-pink-50 rounded-xl text-right focus:border-pink-500 outline-none text-pink-600">
-                          </div>
-                      </div>
                   </div>
               `,
               showCancelButton: true,
               confirmButtonText: 'Tambahkan',
               confirmButtonColor: '#4f46e5',
               didOpen: () => {
+                  // Format Rupiah Otomatis saat ngetik
                   const formatRupiahInput = (el) => {
                       el.addEventListener('input', (e) => {
                           let raw = e.target.value.replace(/[^0-9]/g, '');
@@ -646,14 +635,14 @@
                   
                   const jualInput = document.getElementById('swal-jual-input');
                   const modalInput = document.getElementById('swal-modal-input');
-                  const diskonInput = document.getElementById('swal-diskon-input');
+                  const ketInput = document.getElementById('swal-keterangan');
 
                   if (jualInput) formatRupiahInput(jualInput);
                   if (modalInput) formatRupiahInput(modalInput);
-                  if (diskonInput) formatRupiahInput(diskonInput);
 
-                  if (showKeterangan && document.getElementById('swal-keterangan')) {
-                      document.getElementById('swal-keterangan').focus();
+                  // Arahkan kursor cerdas
+                  if (showKeterangan && ketInput) {
+                      ketInput.focus();
                   } else if (jualInput && defaultJual === '0') {
                       jualInput.focus();
                   }
@@ -661,49 +650,50 @@
               preConfirm: () => {
                   const jualRaw = document.getElementById('swal-jual-input').value.replace(/[^0-9]/g, '');
                   const modalRaw = document.getElementById('swal-modal-input').value.replace(/[^0-9]/g, '');
-                  const diskonRaw = document.getElementById('swal-diskon-input').value.replace(/[^0-9]/g, '');
-
                   const jual = parseInt(jualRaw) || 0;
                   const modal = parseInt(modalRaw) || 0;
-                  const diskon = parseInt(diskonRaw) || 0;
 
                   if (jual <= 0) return window.Swal.showValidationMessage('Harga jual tidak boleh kosong!');
-                  if (diskon >= jual) return window.Swal.showValidationMessage('Diskon tidak masuk akal (lebih besar dari harga jual)!');
-
-                  const hargaAkhir = jual - diskon; 
 
                   let finalName = p.name;
                   let finalNote = `Modal: ${modal}`;
-                  if (diskon > 0) finalNote += `, Diskon: ${diskon}`;
 
+                  // Kalau form keterangan aktif dan kasir ngisi sesuatu
                   if (showKeterangan) {
                       const ket = document.getElementById('swal-keterangan').value.trim();
-                      if (ket !== '') finalName = `${p.name} - ${ket}`;
+                      if (ket !== '') {
+                          finalName = `${p.name} - ${ket}`; // Gabungin nama barang + keterangan di struk
+                      }
                   }
 
-                  return { finalName, hargaAkhir, modal, diskon, finalNote }; 
+                  return { finalName, jual, modal, finalNote };
               }
           }).then(res => {
               if (res.isConfirmed) {
-                  const { finalName, hargaAkhir, modal, diskon, finalNote } = res.value;
+                  const { finalName, jual, modal, finalNote } = res.value;
                   
                   setCart(prevCart => {
-                      const existingItem = prevCart.find(item => item.name === finalName && item.price === hargaAkhir && item.diskon === diskon);
+                      // Cek apakah barang dengan nama persis dan harga yang sama udah ada di keranjang
+                      const existingItem = prevCart.find(item => item.name === finalName && item.price === jual);
                       
                       if (existingItem) {
+                          // Cegah penambahan kalau stok udah mentok
                           if (p.stock !== undefined && existingItem.qty >= p.stock) {
                               showAlert({ icon: 'error', title: 'Stok Habis', text: 'Barang tidak mencukupi!' });
                               return prevCart;
                           }
-                          return prevCart.map(item => item.id === existingItem.id ? { ...item, qty: item.qty + 1 } : item);
+                          // Tumpuk (tambah qty) jadi 1 baris
+                          return prevCart.map(item =>
+                              item.id === existingItem.id ? { ...item, qty: item.qty + 1 } : item
+                          );
                       }
                       
+                      // Kalau beda keterangan atau barang baru, bikin baris baru
                       const newItem = {
                           id: `PROD-${Date.now()}`,
                           name: finalName,
-                          price: hargaAkhir,
+                          price: jual,
                           modal: modal,
-                          diskon: diskon,
                           category: p.category,
                           qty: 1,
                           note: finalNote
@@ -712,7 +702,9 @@
                   });
               }
           });
-                // ==========================================
+      };
+          
+          // ==========================================
           // LOGIKA UNTUK PRODUK BIASA (DENGAN CEK STOK)
           // ==========================================
           // setCart(prevCart => {
@@ -728,11 +720,10 @@
             // }
             // return [...prevCart, { ...p, qty: 1 }];
           // });
-      };
+
       const removeFromCart = (id) => setCart(prev => prev.filter(item => item.id !== id));
       
       const totalBelanja = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      
 
       const handleCheckout = () => {
         if (cart.length === 0) return;
@@ -1124,8 +1115,7 @@
 
                     <div className="pt-2">
                         <label className="block font-bold text-gray-700 mb-1">Uang Diterima:</label>
-                        {/* KOTAK INPUT */}
-                        <div className="relative mb-3">
+                        <div className="relative">
                             <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400 text-xl">Rp</span>
                             <input 
                             type="text" 
@@ -1135,39 +1125,6 @@
                             className="w-full pl-12 pr-4 py-4 text-2xl font-bold border-2 border-gray-200 rounded-2xl text-right focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all" 
                             autoFocus 
                             />
-                        </div>
-                        {/* TOMBOL NOMINAL CEPAT */}
-                        <div className="flex flex-wrap gap-2">
-                            <button 
-                                onClick={() => setPaymentAmount(totalBelanja.toString())} 
-                                className="flex-1 min-w-[70px] py-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-xs font-bold rounded-xl border border-indigo-200 transition-colors active:scale-95"
-                            >
-                                Uang Pas
-                            </button>
-                            <button 
-                                onClick={() => setPaymentAmount('10000')} 
-                                className="flex-1 min-w-[60px] py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl border border-slate-200 transition-colors active:scale-95"
-                            >
-                                10.000
-                            </button>
-                            <button 
-                                onClick={() => setPaymentAmount('20000')} 
-                                className="flex-1 min-w-[60px] py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl border border-slate-200 transition-colors active:scale-95"
-                            >
-                                20.000
-                            </button>
-                            <button 
-                                onClick={() => setPaymentAmount('50000')} 
-                                className="flex-1 min-w-[60px] py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl border border-slate-200 transition-colors active:scale-95"
-                            >
-                                50.000
-                            </button>
-                            <button 
-                                onClick={() => setPaymentAmount('100000')} 
-                                className="flex-1 min-w-[60px] py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl border border-slate-200 transition-colors active:scale-95"
-                            >
-                                100.000
-                            </button>
                         </div>
                     </div>
 
@@ -1457,7 +1414,7 @@
 
       const openEdit = (key, value) => {
         setEditKey(key);
-        setEditValue(value ? value.toString() : '0'); 
+        setEditValue(value.toString());
       };
 
       const saveEdit = (e) => {
@@ -1523,25 +1480,29 @@
                   <h3 className="font-bold text-lg">Ubah Saldo</h3>
                   <button onClick={() => setEditKey(null)} className="text-gray-400 hover:text-gray-600"><Icon name="close" /></button>
                 </div>
-                <form onSubmit={saveEdit} className="p-6 space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nominal Saldo Baru
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400 text-xl">Rp</span>
-                      <input 
-                        required 
-                        type="text" 
-                        value={formatInput(editValue)} 
-                        onChange={e => setEditValue(e.target.value)} 
-                        className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 outline-none font-bold text-xl" 
-                      />
-                    </div>
+                <form onSubmit={saveProduct} className="p-6 space-y-4">
+                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Nama Barang</label><input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label><select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white">{categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}</select></div>
+                    <div><label className="block text-sm font-medium text-gray-700 mb-1">Stok</label><input required type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
                   </div>
+                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Harga (Rp)</label><input required type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" /></div>
+                  
+                  {/* PINDAHKAN INPUT FOTO KE SINI BRO! */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-widest">Link Foto Produk (URL):</label>
+                    <input 
+                      type="text" 
+                      value={formData.image || ''} 
+                      onChange={e => setFormData({...formData, image: e.target.value})} 
+                      placeholder="https://link-gambar.com/foto.jpg" 
+                      className="w-full px-4 py-2 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl focus:border-indigo-500 outline-none text-sm" 
+                    />
+                  </div>
+
                   <div className="pt-4 flex justify-end gap-3">
-                    <button type="button" onClick={() => setEditKey(null)} className="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg">Batal</button>
-                    <button type="submit" className="px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow-md">Simpan Saldo</button>
+                    <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-lg">Batal</button>
+                    <button type="submit" className="px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 shadow-md">Simpan Data</button>
                   </div>
                 </form>
               </div>
@@ -1719,10 +1680,11 @@
     // ==========================================
     function AdminHistory({ transactions, storeConfig }) {
 
-      // Hitung Keuntungan (Untung = Harga Bersih - Modal)
+      // Fungsi pembantu hitung UNTUNG per transaksi
       const calculateTrxProfit = (items) => {
         return items.reduce((sum, item) => {
           const modal = item.modal || 0;
+          // Fallback manual buat data lama kalau ada
           if (!item.modal && item.note && item.note.includes('Admin: ')) {
              const fee = parseInt(item.note.split('Admin: ')[1].replace(/\D/g, '')) || 0;
              return sum + (fee * item.qty);
@@ -1731,29 +1693,16 @@
         }, 0);
       };
 
-      // Hitung Total Modal
+      // Fungsi pembantu hitung MODAL per transaksi
       const calculateTrxModal = (items) => {
         return items.reduce((sum, item) => {
           const modal = item.modal || 0;
+          // Fallback manual buat data lama kalau ada
           if (!item.modal && item.note && item.note.includes('Nominal: ')) {
              const nom = parseInt(item.note.split('Nominal: ')[1].split(',')[0].replace(/\D/g, '')) || 0;
              return sum + (nom * item.qty);
           }
           return sum + (modal * item.qty);
-        }, 0);
-      };
-
-      // Hitung Total Diskon
-      const calculateTrxDiskon = (items) => {
-        return items.reduce((sum, item) => sum + ((item.diskon || 0) * item.qty), 0);
-      };
-
-      // FUNGSI BARU: Hitung Harga Jual Asli (Sebelum Diskon)
-      const calculateTrxGross = (items) => {
-        return items.reduce((sum, item) => {
-          const d = item.diskon || 0;
-          // Harga asli = Harga bersih di keranjang (item.price) + Diskon
-          return sum + ((item.price + d) * item.qty);
         }, 0);
       };
 
@@ -1773,15 +1722,11 @@
           doc.setLineWidth(0.5);
           doc.line(14, 30, 280, 30);
 
-          // Header Tabel PDF sesuai request lo
-          const tableColumn = ["ID", "Kasir", "Waktu", "Metode", "Rincian Item", "Harga Modal", "Keuntungan", "Harga Jual", "Diskon", "Total"];
-          
+          // TAMBAH KOLOM MODAL DI PDF
+          const tableColumn = ["ID", "Kasir", "Waktu", "Metode", "Rincian Item", "Harga Modal", "Keuntungan", "Harga Jual"];
           const tableRows = transactions.map(trx => {
             const untung = calculateTrxProfit(trx.items);
             const modal = calculateTrxModal(trx.items);
-            const diskon = calculateTrxDiskon(trx.items);
-            const gross = calculateTrxGross(trx.items); // Harga Asli
-            
             return [
               trx.id,
               trx.cashierId || '-',
@@ -1790,9 +1735,7 @@
               trx.items.map(i => `${i.qty}x ${i.name}`).join(', '),
               formatRp(modal),
               formatRp(untung),
-              formatRp(gross), // Harga Jual Sebelum Diskon
-              formatRp(diskon), // Nilai Diskon
-              formatRp(trx.total) // Total Setelah Diskon
+              formatRp(trx.total)
             ];
           });
 
@@ -1803,40 +1746,39 @@
             theme: 'grid',
             headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], halign: 'center' },
             columnStyles: {
-              5: { halign: 'right' }, // Modal
-              6: { halign: 'right', fontStyle: 'bold' }, // Untung
-              7: { halign: 'right' }, // Harga Jual Asli
-              8: { halign: 'right', textColor: [219, 39, 119] }, // Diskon (Pink)
-              9: { halign: 'right', fontStyle: 'bold' }  // Total Bersih
+              5: { halign: 'right' }, // Kolom Harga Modal
+              6: { halign: 'right', fontStyle: 'bold' }, // Kolom Keuntungan
+              7: { halign: 'right', fontStyle: 'bold' }  // Kolom Total/Harga Jual
             },
-            styles: { textColor: [0, 0, 0], fontSize: 8 },
+            styles: { textColor: [0, 0, 0], fontSize: 9 },
           });
 
           const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 40;
           const grandTotalTransaksi = transactions.reduce((sum, t) => sum + t.total, 0);
           const grandTotalUntung = transactions.reduce((sum, t) => sum + calculateTrxProfit(t.items), 0);
           const grandTotalModal = transactions.reduce((sum, t) => sum + calculateTrxModal(t.items), 0);
-          const grandTotalDiskon = transactions.reduce((sum, t) => sum + calculateTrxDiskon(t.items), 0);
           
+          // --- BAGIAN RESUME/RINGKASAN DI BAWAH ---
           doc.setFontSize(11);
           doc.setFont(undefined, 'bold');
+          
+          // Garis penutup rekap
           doc.line(180, finalY + 5, 280, finalY + 5);
           
+          // TOTAL MODAL (Warna Abu-abu Gelap)
           doc.setTextColor(71, 85, 105); 
           doc.text(`TOTAL HARGA MODAL :`, 180, finalY + 12);
           doc.text(`${formatRp(grandTotalModal)}`, 280, finalY + 12, { align: 'right' });
           
-          doc.setTextColor(219, 39, 119); // Pink
-          doc.text(`TOTAL DISKON DIBERIKAN :`, 180, finalY + 19);
-          doc.text(`${formatRp(grandTotalDiskon)}`, 280, finalY + 19, { align: 'right' });
-
+          // TOTAL KOTOR (Warna Hitam)
           doc.setTextColor(0, 0, 0); 
-          doc.text(`TOTAL PENGHASILAN BERSIH :`, 180, finalY + 26);
-          doc.text(`${formatRp(grandTotalTransaksi)}`, 280, finalY + 26, { align: 'right' });
+          doc.text(`TOTAL PENGHASILAN KOTOR :`, 180, finalY + 19);
+          doc.text(`${formatRp(grandTotalTransaksi)}`, 280, finalY + 19, { align: 'right' });
           
+          // TOTAL BERSIH (Warna Hijau)
           doc.setTextColor(22, 163, 74); 
-          doc.text(`TOTAL KEUNTUNGAN BERSIH :`, 180, finalY + 33);
-          doc.text(`${formatRp(grandTotalUntung)}`, 280, finalY + 33, { align: 'right' });
+          doc.text(`TOTAL KEUNTUNGAN BERSIH :`, 180, finalY + 26);
+          doc.text(`${formatRp(grandTotalUntung)}`, 280, finalY + 26, { align: 'right' });
 
           doc.save(`Laporan_Rekap_${storeConfig.name}_${Date.now()}.pdf`);
         } catch (error) {
@@ -1857,29 +1799,23 @@
           </div>
 
           <div className="overflow-x-auto">
-            {/* Tabel dilebarkan sedikit biar 10 kolom muat sempurna */}
-            <table className="w-full text-left border-collapse min-w-[1200px]">
+            <table className="w-full text-left border-collapse min-w-[950px]">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100">
                   <th className="p-4 font-medium">ID</th>
                   <th className="p-4 font-medium">Kasir</th>
                   <th className="p-4 font-medium">Waktu</th>
                   <th className="p-4 font-medium">Metode</th>
-                  <th className="p-4 font-medium w-1/4">Rincian Item</th>
+                  <th className="p-4 font-medium">Rincian Item</th>
                   <th className="p-4 font-medium text-right bg-orange-50 text-orange-700">Harga Modal</th>
                   <th className="p-4 font-medium text-right bg-emerald-50 text-emerald-700">Keuntungan</th>
-                  <th className="p-4 font-medium text-right bg-blue-50 text-blue-700">Harga Jual</th>
-                  <th className="p-4 font-medium text-right bg-pink-50 text-pink-700">Diskon</th>
-                  <th className="p-4 font-medium text-right">Total</th>
+                  <th className="p-4 font-medium text-right">Harga Jual</th>
                 </tr>
               </thead>
               <tbody>
                 {transactions.map((trx) => {
                   const untungTrx = calculateTrxProfit(trx.items);
                   const modalTrx = calculateTrxModal(trx.items);
-                  const diskonTrx = calculateTrxDiskon(trx.items);
-                  const grossTrx = calculateTrxGross(trx.items); // Harga Asli
-
                   return (
                     <tr key={trx.id} className="border-b border-gray-50 hover:bg-gray-50">
                       <td className="p-4 font-bold text-gray-700">{trx.id}</td>
@@ -1890,26 +1826,25 @@
                         <div className="flex flex-wrap gap-1">
                           {trx.items.map((item, i) => (
                             <span key={i} className="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
-                              {item.qty}x {item.name} {item.diskon > 0 ? `(Disc: ${formatRp(item.diskon)})` : ''}
+                              {item.qty}x {item.name}
                             </span>
                           ))}
                         </div>
                       </td>
-                      <td className="p-4 font-medium text-orange-600 text-right bg-orange-50/30">{formatRp(modalTrx)}</td>
-                      <td className="p-4 font-bold text-emerald-600 text-right bg-emerald-50/30">{formatRp(untungTrx)}</td>
-                      
-                      {/* KOLOM HARGA JUAL ASLI */}
-                      <td className="p-4 font-medium text-blue-600 text-right bg-blue-50/30">{formatRp(grossTrx)}</td>
-                      
-                      {/* KOLOM DISKON */}
-                      <td className="p-4 font-bold text-pink-500 text-right bg-pink-50/30">{formatRp(diskonTrx)}</td>
-                      
-                      {/* KOLOM TOTAL (HARGA BERSIH) */}
-                      <td className="p-4 font-black text-gray-800 text-right">{formatRp(trx.total)}</td>
+                      {/* KOLOM HARGA MODAL */}
+                      <td className="p-4 font-medium text-orange-600 text-right bg-orange-50/30">
+                        {formatRp(modalTrx)}
+                      </td>
+                      {/* KOLOM KEUNTUNGAN */}
+                      <td className="p-4 font-bold text-emerald-600 text-right bg-emerald-50/30">
+                        {formatRp(untungTrx)}
+                      </td>
+                      {/* KOLOM TOTAL KOTOR / HARGA JUAL */}
+                      <td className="p-4 font-bold text-gray-800 text-right">{formatRp(trx.total)}</td>
                     </tr>
                   );
                 })}
-                {transactions.length === 0 && <tr><td colSpan="10" className="p-12 text-center text-gray-400">Belum ada riwayat transaksi.</td></tr>}
+                {transactions.length === 0 && <tr><td colSpan="8" className="p-12 text-center text-gray-400">Belum ada riwayat transaksi.</td></tr>}
               </tbody>
             </table>
           </div>
