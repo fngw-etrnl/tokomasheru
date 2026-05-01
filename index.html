@@ -582,57 +582,126 @@
       };
 
       // --- FUNGSI KERANJANG ---
+      // --- FUNGSI KERANJANG BARU (DENGAN POP-UP PAKET DATA/PULSA) ---
       const addToCart = (p) => {
           if (p.price === 0) {
+            // Deteksi otomatis: apakah ini produk pulsa/data?
+            const isTelecom = p.name.toLowerCase().includes('data') || p.name.toLowerCase().includes('pulsa') || p.category.toLowerCase().includes('data') || p.category.toLowerCase().includes('pulsa');
+
+            let extraHtml = '';
+            if (isTelecom) {
+                // Tambahan Dropdown Operator & Input Kuota
+                extraHtml = `
+                    <div class="mb-3">
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Operator:</label>
+                        <select id="swal-operator" class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 font-bold text-slate-700">
+                            <option value="">-- Pilih Operator --</option>
+                            <option value="Telkomsel">Telkomsel</option>
+                            <option value="Indosat">Indosat</option>
+                            <option value="XL">XL</option>
+                            <option value="Tri">Tri</option>
+                            <option value="Smartfren">Smartfren</option>
+                            <option value="BYU">BYU</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Keterangan / Kuota (Misal: 10GB atau 50rb):</label>
+                        <input id="swal-keterangan" type="text" class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 font-bold text-slate-700" placeholder="Contoh: 10GB / 50.000">
+                    </div>
+                `;
+            }
+
             window.Swal.fire({
-                title: `Input Nominal ${p.name}`,
+                title: `Input Detail ${p.name}`,
                 html: `
-                    <div class="mt-4 text-left">
-                        <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest">Jumlah (Rupiah):</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-slate-300 text-xl">Rp</span>
-                            <input id="swal-input-nominal" class="w-full p-5 text-3xl font-black border-2 border-slate-100 rounded-3xl text-right focus:border-indigo-500 outline-none" placeholder="0">
+                    <div class="mt-4 text-left text-sm">
+                        ${extraHtml}
+                        
+                        <!-- Input Modal & Harga Jual Terpisah Biar Laba Akurat -->
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Harga Modal:</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-300">Rp</span>
+                                    <input id="swal-modal-input" type="text" class="w-full p-3 pl-8 font-black border-2 border-slate-100 rounded-xl text-right focus:border-indigo-500 outline-none text-slate-600" placeholder="0">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-indigo-400 mb-1 uppercase tracking-widest">Harga Jual:</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-indigo-300">Rp</span>
+                                    <input id="swal-jual-input" type="text" class="w-full p-3 pl-8 font-black border-2 border-indigo-200 bg-indigo-50 rounded-xl text-right focus:border-indigo-500 outline-none text-indigo-700" placeholder="0">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `,
                 showCancelButton: true,
-                confirmButtonText: 'Tambah',
+                confirmButtonText: 'Tambahkan',
                 confirmButtonColor: '#4f46e5',
                 didOpen: () => {
-                    const input = document.getElementById('swal-input-nominal');
-                    input.focus();
-                    input.addEventListener('input', (e) => {
-                        let raw = e.target.value.replace(/[^0-9]/g, '');
-                        e.target.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
-                    });
+                    // Fungsi biar angka ngetik otomatis ada titiknya (Format Rupiah)
+                    const formatRupiahInput = (el) => {
+                        el.addEventListener('input', (e) => {
+                            let raw = e.target.value.replace(/[^0-9]/g, '');
+                            e.target.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
+                        });
+                    };
+                    
+                    const jualInput = document.getElementById('swal-jual-input');
+                    const modalInput = document.getElementById('swal-modal-input');
+                    if (jualInput) formatRupiahInput(jualInput);
+                    if (modalInput) formatRupiahInput(modalInput);
+
+                    // Arahkan kursor otomatis ke form yang pas
+                    if (isTelecom) {
+                        document.getElementById('swal-operator').focus();
+                    } else {
+                        if (modalInput) modalInput.focus();
+                    }
                 },
                 preConfirm: () => {
-                  const inputVal = document.getElementById('swal-input-nominal').value;
-                  const nominal = parseInt(inputVal.replace(/\D/g, ''));
-                  
-                  if (!nominal || nominal <= 0) return window.Swal.showValidationMessage('Isi nominal!');
-                  
-                  // PERBAIKAN: Cari fee berdasarkan nama produk (p.name)
-                  const fee = findAdminFee(nominal, p.name, adminFees); 
-                  
-                  return { nominal, fee }; // Balikin cuma nominal & fee
+                    const jualRaw = document.getElementById('swal-jual-input').value.replace(/[^0-9]/g, '');
+                    const modalRaw = document.getElementById('swal-modal-input').value.replace(/[^0-9]/g, '');
+                    const jual = parseInt(jualRaw) || 0;
+                    const modal = parseInt(modalRaw) || 0;
+
+                    if (jual <= 0) return window.Swal.showValidationMessage('Harga jual harus diisi!');
+
+                    let finalName = p.name;
+                    let finalNote = `Modal: ${modal}`;
+
+                    // Validasi khusus kalau masuk menu Paket Data / Pulsa
+                    if (isTelecom) {
+                        const op = document.getElementById('swal-operator').value;
+                        const ket = document.getElementById('swal-keterangan').value;
+                        
+                        if (!op) return window.Swal.showValidationMessage('Pilih Operator dulu, Bro!');
+                        if (!ket) return window.Swal.showValidationMessage('Isi keterangan atau jumlah kuotanya!');
+                        
+                        // Gabungin nama biar di struk jadinya keren: "Paket Data - Telkomsel 10GB"
+                        finalName = `${p.name} - ${op} ${ket}`;
+                    }
+
+                    return { finalName, jual, modal, finalNote };
                 }
-              }).then(res => {
+            }).then(res => {
                 if (res.isConfirmed) {
-                  const { nominal, fee } = res.value;
-                  const newItem = {
-                    id: `PROD-${Date.now()}`,
-                    name: `${p.name}`,
-                    price: nominal + fee, 
-                    modal: nominal, // <--- INJEKSI MODAL DI SINI
-                    category: p.category,
-                    qty: 1,
-                    note: `Nominal: ${nominal}, Admin: ${fee}`
-                  };
-                  setCart(prev => [...prev, newItem]);
+                    const { finalName, jual, modal, finalNote } = res.value;
+                    const newItem = {
+                        id: `PROD-${Date.now()}`,
+                        name: finalName,
+                        price: jual, // Masuk ke total bayar struk
+                        modal: modal, // Dikirim ke Sheet biar dihitung untungnya
+                        category: p.category,
+                        qty: 1,
+                        note: finalNote
+                    };
+                    setCart(prev => [...prev, newItem]);
                 }
-              });
-              return; // Supaya gak lanjut ke logika produk biasa di bawah
+            });
+            return; // Berhenti di sini, jangan lanjut ke kode tambah stok normal
           }
         // LOGIKA UNTUK PRODUK BIASA (DENGAN CEK STOK)
         setCart(prevCart => {
