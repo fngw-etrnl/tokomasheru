@@ -806,14 +806,18 @@
           showAlert({ icon: 'error', title: 'Uang Kurang' });
           return;
         }
+        const totalDiskon = cart.reduce((sum, item) => sum + ((item.diskon || 0) * item.qty), 0);
+        
         const safeWalletName = typeof walletName !== 'undefined' ? walletName : '';
         const finalMethod = paymentMethod === 'E-Wallet' ? `E-Wallet (${safeWalletName || 'Digital'})` : paymentMethod;
+        
         const transactionData = { 
           id: `INV-${Date.now().toString().slice(-6)}`, 
           date: new Date().toISOString(), 
           cashierId: cashierId, 
           items: cart, 
           total: totalBelanja, 
+          totalDiskon: totalDiskon,
           payment: bayar, 
           change: bayar - totalBelanja,
           method: finalMethod, 
@@ -1030,6 +1034,12 @@
                             <div className="flex-1">
                                 <h4 className="font-medium text-gray-800 leading-tight mb-1">{item.name}</h4>
                                 <div className="text-indigo-600 font-bold text-sm">{formatRp(item.price)}</div>
+                                {/* LABEL DISKON DI KERANJANG */}
+                                {item.diskon > 0 && (
+                                    <span className="text-[10px] bg-pink-100 text-pink-600 px-1.5 py-0.5 rounded font-bold">
+                                        Disc: -{formatRp(item.diskon)}
+                                    </span>
+                                )}
                             </div>
                             <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-200 p-1">
                                 <button onClick={() => updateQty(item.id, -1)} className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-md">-</button>
@@ -1235,9 +1245,32 @@
                   <div className="border-b border-dashed border-gray-300 mb-2"></div>
                   
                   <div className="space-y-1 text-[9pt]">
-                    <div className="flex justify-between font-bold"><span>TOTAL</span><span>{formatRp(lastInvoice.total)}</span></div>
-                    <div className="flex justify-between"><span>BAYAR ({lastInvoice.method})</span><span>{formatRp(lastInvoice.payment)}</span></div>
-                    <div className="flex justify-between font-bold"><span>KEMBALI</span><span>{formatRp(lastInvoice.change)}</span></div>
+                      {/* HARGA ASLI (GROSS) */}
+                      <div className="flex justify-between">
+                          <span>Subtotal</span>
+                          <span>{formatRp(lastInvoice.total + lastInvoice.totalDiskon)}</span>
+                      </div>
+            
+                      {/* TOTAL DISKON */}
+                      {lastInvoice.totalDiskon > 0 && (
+                          <div className="flex justify-between text-pink-600 italic">
+                              <span>Diskon Toko</span>
+                              <span>-{formatRp(lastInvoice.totalDiskon)}</span>
+                          </div>
+                      )}
+            
+                      <div className="flex justify-between font-bold border-t border-dashed border-gray-200 pt-1">
+                          <span>TOTAL</span>
+                          <span>{formatRp(lastInvoice.total)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                          <span>BAYAR ({lastInvoice.method})</span>
+                          <span>{formatRp(lastInvoice.payment)}</span>
+                      </div>
+                      <div className="flex justify-between font-bold">
+                          <span>KEMBALI</span>
+                          <span>{formatRp(lastInvoice.change)}</span>
+                      </div>
                   </div>
                   
                   {lastInvoice.refNumber && <div className="mt-2 text-[7pt] italic text-gray-500">Ref: {lastInvoice.refNumber}</div>}
