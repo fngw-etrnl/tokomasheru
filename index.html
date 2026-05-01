@@ -718,20 +718,19 @@
           // ==========================================
           // LOGIKA UNTUK PRODUK BIASA (DENGAN CEK STOK)
           // ==========================================
-          setCart(prevCart => {
-            const existingItem = prevCart.find(item => item.id === p.id);
-            if (existingItem) {
-              if (p.stock !== undefined && existingItem.qty >= p.stock) {
-                showAlert({ icon: 'error', title: 'Stok Habis', text: 'Barang tidak mencukupi!' });
-                return prevCart;
-              }
-              return prevCart.map(item =>
-                item.id === p.id ? { ...item, qty: item.qty + 1 } : item
-              );
-            }
-            return [...prevCart, { ...p, qty: 1 }];
-          });
-      };
+          // setCart(prevCart => {
+            // const existingItem = prevCart.find(item => item.id === p.id);
+            // if (existingItem) {
+              // if (p.stock !== undefined && existingItem.qty >= p.stock) {
+                // showAlert({ icon: 'error', title: 'Stok Habis', text: 'Barang tidak mencukupi!' });
+                // return prevCart;
+              // }
+              // return prevCart.map(item =>
+                // item.id === p.id ? { ...item, qty: item.qty + 1 } : item
+              // );
+            // }
+            // return [...prevCart, { ...p, qty: 1 }];
+          // });
 
       const removeFromCart = (id) => setCart(prev => prev.filter(item => item.id !== id));
       
