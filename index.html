@@ -1806,8 +1806,7 @@
           doc.setLineWidth(0.5);
           doc.line(14, 30, 280, 30);
 
-          // Header Tabel PDF sesuai request lo
-          const tableColumn = ["ID", "Kasir", "Waktu", "Metode", "Rincian Item", "Harga Modal", "Keuntungan", "Harga Jual", "Diskon", "Total"];
+          const tableColumn = ["ID", "Kasir", "Waktu", "Metode", "Rincian Item", "Harga Modal", "Harga Jual", "Diskon", "Keuntungan", "Total"];
           
           const tableRows = transactions.map(trx => {
             const untung = calculateTrxProfit(trx.items);
