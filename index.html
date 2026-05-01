@@ -582,114 +582,139 @@
       };
 
       // --- FUNGSI KERANJANG ---
-      // --- FUNGSI KERANJANG BARU (TANPA DROPDOWN, LEBIH SIMPEL) ---
+      // --- FUNGSI KERANJANG BARU (POP-UP MUNCUL UNTUK SEMUA BARANG) ---
       const addToCart = (p) => {
-          if (p.price === 0) {
-            // Deteksi kategori: Munculkan form Keterangan di semua kategori KECUALI 3 ini
-            const cat = p.category ? p.category.toLowerCase() : '';
-            const showKeterangan = cat !== 'pulsa' && cat !== 'voucher & kartu' && cat !== 'pulsa pln';
-
-            let extraHtml = '';
-            if (showKeterangan) {
-                // HANYA Input Keterangan Manual (Bebas ketik Operator & Jenis)
-                extraHtml = `
-                    <div class="mb-3">
-                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Keterangan (Operator & Kuota):</label>
-                        <input id="swal-keterangan" type="text" class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 font-bold text-slate-700" placeholder="Contoh: Indosat 10GB / 50.000">
-                    </div>
-                `;
-            }
-
-            window.Swal.fire({
-                title: `Input Detail ${p.name}`,
-                html: `
-                    <div class="mt-4 text-left text-sm">
-                        ${extraHtml}
-                        
-                        <!-- Input Modal & Harga Jual -->
-                        <div class="grid grid-cols-2 gap-3 mt-2">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Harga Modal:</label>
-                                <div class="relative">
-                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-300">Rp</span>
-                                    <input id="swal-modal-input" type="text" class="w-full p-3 pl-8 font-black border-2 border-slate-100 rounded-xl text-right focus:border-indigo-500 outline-none text-slate-600" placeholder="0">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-indigo-400 mb-1 uppercase tracking-widest">Harga Jual:</label>
-                                <div class="relative">
-                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-indigo-300">Rp</span>
-                                    <input id="swal-jual-input" type="text" class="w-full p-3 pl-8 font-black border-2 border-indigo-200 bg-indigo-50 rounded-xl text-right focus:border-indigo-500 outline-none text-indigo-700" placeholder="0">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Tambahkan',
-                confirmButtonColor: '#4f46e5',
-                didOpen: () => {
-                    // Format Rupiah Otomatis
-                    const formatRupiahInput = (el) => {
-                        el.addEventListener('input', (e) => {
-                            let raw = e.target.value.replace(/[^0-9]/g, '');
-                            e.target.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
-                        });
-                    };
-                    
-                    const jualInput = document.getElementById('swal-jual-input');
-                    const modalInput = document.getElementById('swal-modal-input');
-                    const ketInput = document.getElementById('swal-keterangan');
-
-                    if (jualInput) formatRupiahInput(jualInput);
-                    if (modalInput) formatRupiahInput(modalInput);
-
-                    // Arahkan kursor otomatis
-                    if (showKeterangan && ketInput) {
-                        ketInput.focus();
-                    } else if (modalInput) {
-                        modalInput.focus();
-                    }
-                },
-                preConfirm: () => {
-                    const jualRaw = document.getElementById('swal-jual-input').value.replace(/[^0-9]/g, '');
-                    const modalRaw = document.getElementById('swal-modal-input').value.replace(/[^0-9]/g, '');
-                    const jual = parseInt(jualRaw) || 0;
-                    const modal = parseInt(modalRaw) || 0;
-
-                    if (jual <= 0) return window.Swal.showValidationMessage('Harga jual harus diisi!');
-
-                    let finalName = p.name;
-                    let finalNote = `Modal: ${modal}`;
-
-                    // Validasi khusus kalau form Keterangan aktif
-                    if (showKeterangan) {
-                        const ket = document.getElementById('swal-keterangan').value;
-                        if (!ket) return window.Swal.showValidationMessage('Isi keterangannya dulu, Bro!');
-                        
-                        // Gabungin nama biar di struk jadinya keren
-                        finalName = `${p.name} - ${ket}`;
-                    }
-
-                    return { finalName, jual, modal, finalNote };
-                }
-            }).then(res => {
-                if (res.isConfirmed) {
-                    const { finalName, jual, modal, finalNote } = res.value;
-                    const newItem = {
-                        id: `PROD-${Date.now()}`,
-                        name: finalName,
-                        price: jual,
-                        modal: modal,
-                        category: p.category,
-                        qty: 1,
-                        note: finalNote
-                    };
-                    setCart(prev => [...prev, newItem]);
-                }
-            });
-            return; 
+          // 1. Cek stok paling awal
+          if (p.stock !== undefined && p.stock <= 0) {
+              showAlert({ icon: 'error', title: 'Stok Habis', text: 'Barang tidak mencukupi!' });
+              return;
           }
+
+          // 2. Deteksi kategori: Munculkan form Keterangan di semua kategori KECUALI 3 ini
+          const cat = p.category ? p.category.toLowerCase().trim() : '';
+          const showKeterangan = cat !== 'pulsa' && cat !== 'voucher & kartu' && cat !== 'pulsa pln';
+
+          let extraHtml = '';
+          if (showKeterangan) {
+              extraHtml = `
+                  <div class="mb-3">
+                      <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Keterangan / Catatan (Opsional):</label>
+                      <input id="swal-keterangan" type="text" class="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-indigo-500 font-bold text-slate-700" placeholder="Contoh: SN / IMEI / Varian Warna...">
+                  </div>
+              `;
+          }
+
+          // Siapkan pre-fill angka dari database biar kasir gak capek ngetik ulang
+          const defaultModal = p.modal ? formatThousand(p.modal) : '0';
+          const defaultJual = p.price ? formatThousand(p.price) : '0';
+
+          window.Swal.fire({
+              title: `Detail ${p.name}`,
+              html: `
+                  <div class="mt-4 text-left text-sm">
+                      ${extraHtml}
+                      
+                      <!-- Input Modal & Harga Jual -->
+                      <div class="grid grid-cols-2 gap-3 mt-2">
+                          <div>
+                              <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Harga Modal:</label>
+                              <div class="relative">
+                                  <span class="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-300">Rp</span>
+                                  <input id="swal-modal-input" type="text" value="${defaultModal}" class="w-full p-3 pl-8 font-black border-2 border-slate-100 rounded-xl text-right focus:border-indigo-500 outline-none text-slate-600">
+                              </div>
+                          </div>
+                          <div>
+                              <label class="block text-[10px] font-bold text-indigo-400 mb-1 uppercase tracking-widest">Harga Jual:</label>
+                              <div class="relative">
+                                  <span class="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-indigo-300">Rp</span>
+                                  <input id="swal-jual-input" type="text" value="${defaultJual}" class="w-full p-3 pl-8 font-black border-2 border-indigo-200 bg-indigo-50 rounded-xl text-right focus:border-indigo-500 outline-none text-indigo-700">
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              `,
+              showCancelButton: true,
+              confirmButtonText: 'Tambahkan',
+              confirmButtonColor: '#4f46e5',
+              didOpen: () => {
+                  // Format Rupiah Otomatis saat ngetik
+                  const formatRupiahInput = (el) => {
+                      el.addEventListener('input', (e) => {
+                          let raw = e.target.value.replace(/[^0-9]/g, '');
+                          e.target.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
+                      });
+                  };
+                  
+                  const jualInput = document.getElementById('swal-jual-input');
+                  const modalInput = document.getElementById('swal-modal-input');
+                  const ketInput = document.getElementById('swal-keterangan');
+
+                  if (jualInput) formatRupiahInput(jualInput);
+                  if (modalInput) formatRupiahInput(modalInput);
+
+                  // Arahkan kursor cerdas
+                  if (showKeterangan && ketInput) {
+                      ketInput.focus();
+                  } else if (jualInput && defaultJual === '0') {
+                      jualInput.focus();
+                  }
+              },
+              preConfirm: () => {
+                  const jualRaw = document.getElementById('swal-jual-input').value.replace(/[^0-9]/g, '');
+                  const modalRaw = document.getElementById('swal-modal-input').value.replace(/[^0-9]/g, '');
+                  const jual = parseInt(jualRaw) || 0;
+                  const modal = parseInt(modalRaw) || 0;
+
+                  if (jual <= 0) return window.Swal.showValidationMessage('Harga jual tidak boleh kosong!');
+
+                  let finalName = p.name;
+                  let finalNote = `Modal: ${modal}`;
+
+                  // Kalau form keterangan aktif dan kasir ngisi sesuatu
+                  if (showKeterangan) {
+                      const ket = document.getElementById('swal-keterangan').value.trim();
+                      if (ket !== '') {
+                          finalName = `${p.name} - ${ket}`; // Gabungin nama barang + keterangan di struk
+                      }
+                  }
+
+                  return { finalName, jual, modal, finalNote };
+              }
+          }).then(res => {
+              if (res.isConfirmed) {
+                  const { finalName, jual, modal, finalNote } = res.value;
+                  
+                  setCart(prevCart => {
+                      // Cek apakah barang dengan nama persis dan harga yang sama udah ada di keranjang
+                      const existingItem = prevCart.find(item => item.name === finalName && item.price === jual);
+                      
+                      if (existingItem) {
+                          // Cegah penambahan kalau stok udah mentok
+                          if (p.stock !== undefined && existingItem.qty >= p.stock) {
+                              showAlert({ icon: 'error', title: 'Stok Habis', text: 'Barang tidak mencukupi!' });
+                              return prevCart;
+                          }
+                          // Tumpuk (tambah qty) jadi 1 baris
+                          return prevCart.map(item =>
+                              item.id === existingItem.id ? { ...item, qty: item.qty + 1 } : item
+                          );
+                      }
+                      
+                      // Kalau beda keterangan atau barang baru, bikin baris baru
+                      const newItem = {
+                          id: `PROD-${Date.now()}`,
+                          name: finalName,
+                          price: jual,
+                          modal: modal,
+                          category: p.category,
+                          qty: 1,
+                          note: finalNote
+                      };
+                      return [...prevCart, newItem];
+                  });
+              }
+          });
+      };
           
           // ==========================================
           // LOGIKA UNTUK PRODUK BIASA (DENGAN CEK STOK)
